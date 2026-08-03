@@ -127,6 +127,7 @@
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), inset 0 -1px 0 rgba(255,255,255,0.03);
   }
   input[type="number"]:focus, select:focus{ border-color: rgba(57,230,255,0.6); box-shadow: inset 0 2px 5px rgba(0,0,0,0.5), 0 0 0 3px rgba(57,230,255,0.15); }
+  input[type="number"]:disabled{ opacity:.4; cursor:not-allowed; }
   select{ appearance:none; -webkit-appearance:none;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='9'><path d='M1 1l6 6 6-6' stroke='%239aa3b2' stroke-width='1.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>");
     background-repeat:no-repeat; background-position: right 14px center;
@@ -241,7 +242,7 @@
 
         <label class="checkbox-row" id="row-motor">
           <input type="checkbox" id="isMotor">
-          <span>Электродвигатель (учитывать КПД)</span>
+          <span>Электродвигатель (учитывать КПД, cos φ)</span>
         </label>
       </div>
 
@@ -422,6 +423,7 @@
     el('field-current').style.display = v==='current' ? '' : 'none';
     el('field-eta').style.display     = v==='power' ? '' : 'none';
     el('row-motor').style.display     = v==='power' ? '' : 'none';
+    syncMotorFieldsState();
   });
   bindToggle('toggle-material', v=>{
     state.material = v;
@@ -431,16 +433,31 @@
   ['power','currentInput','cosphi','eta','length','maxDrop'].forEach(id=>{
     el(id).addEventListener('input', recalc);
   });
-  el('isMotor').addEventListener('change', recalc);
+  el('isMotor').addEventListener('change', ()=>{ syncMotorFieldsState(); recalc(); });
   el('method').addEventListener('change', recalc);
+
+  // cos φ и КПД учитываются в расчёте только когда включён режим "Электродвигатель"
+  // (и только в режиме "Мощностью" — в режиме "Током" переключателя двигателя нет)
+  function syncMotorFieldsState(){
+    const isPower = state.loadType === 'power';
+    const isMotor = el('isMotor').checked;
+    el('cosphi').disabled = isPower && !isMotor;
+    el('eta').disabled = !(isPower && isMotor);
+  }
+
+  function getEffectiveCosPhi(){
+    if (state.loadType === 'current') return parseFloat(el('cosphi').value) || 1;
+    const isMotor = el('isMotor').checked;
+    return isMotor ? (parseFloat(el('cosphi').value) || 1) : 1;
+  }
 
   function calcCurrent(){
     if (state.loadType === 'current'){
       return parseFloat(el('currentInput').value) || 0;
     }
-    const cosphi = parseFloat(el('cosphi').value) || 1;
     const isMotor = el('isMotor').checked;
-    const eta = parseFloat(el('eta').value) || 1;
+    const cosphi = getEffectiveCosPhi();
+    const eta = isMotor ? (parseFloat(el('eta').value) || 1) : 1;
     let Pw = (parseFloat(el('power').value) || 0) * 1000;
     if (isMotor) Pw = Pw / eta;
     if (state.network === '1'){
@@ -458,9 +475,10 @@
   }
 
   function selectCable(I){
-    const cosphi = parseFloat(el('cosphi').value) || 1;
+    const cosphi = getEffectiveCosPhi();
     const length = parseFloat(el('length').value) || 0;
-    const maxDrop = parseFloat(el('maxDrop').value) || 5;
+    let maxDrop = parseFloat(el('maxDrop').value);
+    if (isNaN(maxDrop)) maxDrop = 5;
     const method = el('method').value;
     const table = AMPACITY[state.material][method];
 
@@ -487,7 +505,7 @@
     const result = selectCable(I > 0 ? I : 0.001);
 
     el('stat-current').textContent = fmt(I,1) + ' А';
-    el('stat-section').textContent = result.s + ' мм²';
+    el('stat-section').textContent = result.s.toLocaleString('ru-RU') + ' мм²';
     el('stat-drop').textContent = fmt(result.drop,1) + ' %';
     el('stat-breaker').textContent = result.brk + ' А';
 
@@ -498,13 +516,14 @@
     // диаграмма
     const materialLabel = state.material === 'cu' ? 'медь' : 'алюминий';
     const networkLabel = state.network === '1' ? '1~220В' : '3~380В';
-    el('txt-section-big').textContent = 'S = ' + result.s + ' мм²';
+    el('txt-section-big').textContent = 'S = ' + result.s.toLocaleString('ru-RU') + ' мм²';
     el('txt-current-small').textContent = materialLabel + ' · I = ' + fmt(I,1) + ' А';
     el('txt-network-label').textContent = networkLabel;
     el('txt-breaker-small').textContent = result.brk + ' А';
-    el('txt-length').textContent = 'L = ' + (parseFloat(el('length').value)||0) + ' м';
+    el('txt-length').textContent = 'L = ' + ((parseFloat(el('length').value)||0).toLocaleString('ru-RU')) + ' м';
   }
 
+  syncMotorFieldsState();
   recalc();
 })();
 </script>
