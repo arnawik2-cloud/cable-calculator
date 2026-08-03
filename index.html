@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>СЕЧЕНИЕ — калькулятор кабеля</title>
+<title>Электрика — калькуляторы</title>
 <style>
   :root{
     --bg: #10141a;
@@ -57,6 +57,78 @@
   }
 
   .grid{ display:grid; grid-template-columns: 380px 1fr; gap:24px; align-items:start; }
+
+  .main-tabs{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:28px; }
+  .main-tab-btn{
+    border:1px solid var(--input-border);
+    background: var(--input-bg);
+    color: var(--text-dim);
+    font-family:inherit; font-size:14px; font-weight:700;
+    padding:11px 22px; border-radius:999px; cursor:pointer;
+    box-shadow: inset 0 2px 5px rgba(0,0,0,0.4);
+    transition: all .15s ease;
+  }
+  .main-tab-btn:hover:not(.active){ color: var(--text); }
+  .main-tab-btn.active{
+    background: linear-gradient(160deg, var(--amber-strong), #12c9e0);
+    color: var(--amber-dark);
+    border-color: transparent;
+    box-shadow:
+      0 0 18px rgba(57,230,255,0.5),
+      0 3px 6px rgba(0,0,0,0.35),
+      0 1px 0 rgba(255,255,255,0.5) inset,
+      0 -3px 6px rgba(0,0,0,0.15) inset;
+    transform: translateY(-1px);
+  }
+
+  .field-hint{
+    font-size:11px; color: var(--text-dimmer); line-height:1.5; margin-top:7px;
+  }
+
+  .appliance-row{
+    display:flex; align-items:center; gap:10px;
+    padding:11px 2px; cursor:pointer; user-select:none;
+    border-bottom:1px solid rgba(255,255,255,0.06);
+    font-size:14px; color: var(--text-dim);
+  }
+  .appliance-row:last-child{ border-bottom:none; }
+  .appliance-row input[type="checkbox"]{ width:16px; height:16px; accent-color: var(--amber); cursor:pointer; flex-shrink:0; }
+  .appliance-row span{ flex:1; }
+  .appliance-row b{ color: var(--text); font-weight:700; font-size:13px; }
+  .appliance-row-custom input[type="number"]{ width:90px; padding:8px 10px; font-size:13px; }
+
+  .phase-inputs-grid{ display:grid; grid-template-columns:1fr 1fr; gap:12px 16px; }
+  .phase-input-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:13px; color: var(--text-dim); }
+  .phase-input-row input[type="number"]{ width:92px; padding:8px 10px; font-size:13px; }
+
+  .phase-columns{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:16px; }
+  .phase-col{
+    background: linear-gradient(155deg, #1b202a 0%, #171b22 45%, #14181f 100%);
+    border:1px solid var(--card-border); border-radius:16px; padding:16px 18px;
+  }
+  .phase-col-header{
+    font-size:11px; font-weight:700; letter-spacing:.08em; text-transform:uppercase;
+    color: var(--text-dim); margin-bottom:8px;
+  }
+  .phase-col-items{ font-size:13px; color: var(--text); line-height:1.6; min-height:40px; }
+  .phase-col-total{
+    font-size:18px; font-weight:800; color: var(--amber);
+    margin-top:10px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.08);
+  }
+
+  .info-banner{
+    background: rgba(57,230,255,0.07);
+    border:1px solid rgba(57,230,255,0.28);
+    color:#bdf3ff;
+    border-radius:12px; padding:12px 16px; font-size:13px; line-height:1.5;
+    margin-top:16px;
+    transition: all .15s ease;
+  }
+  .info-banner.danger{
+    background: rgba(232,130,122,0.09);
+    border-color: rgba(232,130,122,0.35);
+    color:#f0a49d;
+  }
 
   .card{
     background: linear-gradient(155deg, #1b202a 0%, #171b22 45%, #14181f 100%);
@@ -197,9 +269,20 @@
 <body>
 <div class="page">
   <div class="badge">Работает локально · без API</div>
-  <h1>Сечение</h1>
-  <p class="subtitle">Подбор сечения кабеля, проверка потери напряжения и подбор автомата — весь расчёт выполняется в браузере.</p>
+  <h1>Электрика</h1>
+  <p class="subtitle">Набор расчётов для дома и объекта — сечение кабеля, подбор УЗО и автомата. Всё считается прямо в браузере, без интернета.</p>
 
+  <div class="main-tabs" id="main-tabs">
+    <button class="main-tab-btn active" data-tab="cable">Сечение кабеля</button>
+    <button class="main-tab-btn" data-tab="rcd">УЗО + автомат</button>
+    <button class="main-tab-btn" data-tab="led">БП для LED-ленты</button>
+    <button class="main-tab-btn" data-tab="lux">Освещённость</button>
+    <button class="main-tab-btn" data-tab="group">Розеточная группа</button>
+    <button class="main-tab-btn" data-tab="pipe">Гофра/труба</button>
+    <button class="main-tab-btn" data-tab="phase">Баланс фаз</button>
+  </div>
+
+  <div class="tab-panel" id="tab-cable">
   <div class="grid">
     <div class="col-left">
       <div class="card">
@@ -376,6 +459,725 @@
   </div>
 
   <p class="disclaimer">Расчёт ориентировочный: сечение подобрано по типовым таблицам длительно допустимых токов (аналог таблиц ПУЭ гл. 1.3) для стандартных условий прокладки, без поправочных коэффициентов на температуру и число рядом проложенных кабелей. Потеря напряжения — по упрощённой формуле без учёта реактивного сопротивления. Для проектной документации используйте актуальные нормативы и расчёт квалифицированного специалиста.</p>
+  </div>
+
+  <div class="tab-panel" id="tab-rcd" style="display:none">
+  <div class="grid">
+    <div class="col-left">
+      <div class="card">
+        <div class="field-group">
+          <label>Тип линии</label>
+          <select id="rcd-linetype">
+            <option value="sockets_dry" selected>Розетки (сухие помещения)</option>
+            <option value="wet">Розетки / техника у воды (ванная, кухня)</option>
+            <option value="stationary">Мощная стационарная техника (плита, водонагреватель)</option>
+            <option value="lighting">Освещение</option>
+            <option value="main">Ввод на весь дом/квартиру (противопожарное)</option>
+            <option value="outdoor">Улица / баня / гараж</option>
+          </select>
+        </div>
+
+        <div class="field-group">
+          <label>Сеть</label>
+          <div class="toggle" id="rcd-toggle-network">
+            <button class="toggle-btn active" data-value="1">1~ 220 В</button>
+            <button class="toggle-btn" data-value="3">3~ 380 В</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Нагрузка задана</label>
+          <div class="toggle" id="rcd-toggle-loadtype">
+            <button class="toggle-btn active" data-value="power">Мощностью</button>
+            <button class="toggle-btn" data-value="current">Током</button>
+          </div>
+        </div>
+
+        <div class="field-group" id="rcd-field-power">
+          <label>Мощность линии, кВт</label>
+          <input type="number" id="rcd-power" value="3.5" step="0.1" min="0">
+        </div>
+
+        <div class="field-group" id="rcd-field-current" style="display:none">
+          <label>Ток линии, А</label>
+          <input type="number" id="rcd-current" value="16" step="0.1" min="0">
+        </div>
+
+        <div class="field-group">
+          <label>cos φ</label>
+          <input type="number" id="rcd-cosphi" value="1" step="0.01" min="0.1" max="1">
+        </div>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="card diagram-card">
+        <svg id="rcd-diagram" viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="cableTubeGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#7ff0ff"/>
+              <stop offset="30%" stop-color="#39e6ff"/>
+              <stop offset="62%" stop-color="#0f9bb0"/>
+              <stop offset="100%" stop-color="#053840"/>
+            </linearGradient>
+            <radialGradient id="sphereGrad2" cx="35%" cy="30%" r="75%">
+              <stop offset="0%"  stop-color="#eaffff"/>
+              <stop offset="35%" stop-color="#39e6ff"/>
+              <stop offset="100%" stop-color="#063a42"/>
+            </radialGradient>
+            <linearGradient id="bevelGrad2" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#262d38"/>
+              <stop offset="55%" stop-color="#171b22"/>
+              <stop offset="100%" stop-color="#0b0d11"/>
+            </linearGradient>
+            <filter id="neon3d2" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="shadowBlur"/>
+              <feOffset in="shadowBlur" dx="0" dy="7" result="shadowOffset"/>
+              <feComponentTransfer in="shadowOffset" result="shadowFaded">
+                <feFuncA type="linear" slope="0.55"/>
+              </feComponentTransfer>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="glow"/>
+              <feMerge>
+                <feMergeNode in="shadowFaded"/>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="softShadow2" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5"/>
+            </filter>
+          </defs>
+
+          <text id="rcd-txt-big" x="430" y="34" text-anchor="middle" font-size="24" font-weight="800" fill="#f7f4ee">АВ 25 А · УЗО 40 А</text>
+          <text id="rcd-txt-small" x="430" y="56" text-anchor="middle" font-size="13" fill="#8b93a1">чувствительность 30 мА · I = 15,9 А</text>
+
+          <ellipse cx="85" cy="152" rx="46" ry="7" fill="#000" opacity="0.35" filter="url(#softShadow2)"/>
+          <rect x="40" y="95" width="90" height="52" rx="10" fill="url(#bevelGrad2)" stroke="rgba(255,255,255,0.14)" filter="url(#neon3d2)"/>
+          <rect x="42" y="97" width="86" height="14" rx="7" fill="rgba(255,255,255,0.05)"/>
+          <text x="85" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1">АВТОМАТ</text>
+          <text id="rcd-txt-av-value" x="85" y="136" text-anchor="middle" font-size="15" font-weight="800" fill="#39e6ff">25 А</text>
+
+          <ellipse cx="205" cy="152" rx="55" ry="7" fill="#000" opacity="0.35" filter="url(#softShadow2)"/>
+          <rect x="150" y="95" width="110" height="52" rx="10" fill="url(#bevelGrad2)" stroke="rgba(255,255,255,0.14)" filter="url(#neon3d2)"/>
+          <rect x="152" y="97" width="106" height="14" rx="7" fill="rgba(255,255,255,0.05)"/>
+          <text x="205" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1">УЗО</text>
+          <text id="rcd-txt-rcd-value" x="205" y="132" text-anchor="middle" font-size="14" font-weight="800" fill="#39e6ff">40 А</text>
+          <text id="rcd-txt-rcd-ma" x="205" y="144" text-anchor="middle" font-size="10" fill="#c9cfd8">30 мА</text>
+
+          <ellipse cx="495" cy="132" rx="255" ry="8" fill="#000" opacity="0.3" filter="url(#softShadow2)"/>
+          <rect x="290" y="116" width="470" height="10" rx="5" fill="url(#cableTubeGrad2)" filter="url(#neon3d2)"/>
+          <rect x="292" y="117.5" width="466" height="2.5" rx="1.2" fill="rgba(255,255,255,0.55)"/>
+
+          <ellipse cx="800" cy="148" rx="30" ry="7" fill="#000" opacity="0.4" filter="url(#softShadow2)"/>
+          <circle cx="800" cy="121" r="27" fill="url(#sphereGrad2)" stroke="#39e6ff" stroke-width="1.5" filter="url(#neon3d2)"/>
+          <ellipse cx="791" cy="111" rx="8" ry="5" fill="rgba(255,255,255,0.55)"/>
+          <text x="800" y="128" text-anchor="middle" font-size="20" font-weight="800" fill="#06333a">Н</text>
+        </svg>
+      </div>
+
+      <div class="info-banner" id="rcd-note">Стандартная защита розеточных групп в сухих жилых комнатах — 30 мА.</div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Расчётный ток</div>
+          <div class="stat-value" id="rcd-stat-current">— А</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Автомат</div>
+          <div class="stat-value green" id="rcd-stat-breaker">— А</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">УЗО, номинал</div>
+          <div class="stat-value accent" id="rcd-stat-rcd">— А</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Чувствительность</div>
+          <div class="stat-value" id="rcd-stat-ma">— мА</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="disclaimer">Расчёт ориентировочный: номинал УЗО подобран по правилу «УЗО ≥ автомата по току» из стандартного ряда, чувствительность — по типовому назначению линии (аналог ПУЭ / ГОСТ Р 50571.3). Не учитывает избирательность (селективность) между несколькими УЗО, фактический ток утечки линии, тип УЗО (АС/А/В) и особые требования проекта. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
+  </div>
+
+  <div class="tab-panel" id="tab-led" style="display:none">
+  <div class="grid">
+    <div class="col-left">
+      <div class="card">
+        <div class="field-group">
+          <label>Длина ленты, м</label>
+          <input type="number" id="led-length" value="5" step="0.1" min="0">
+        </div>
+
+        <div class="field-group">
+          <label>Мощность, Вт/м</label>
+          <input type="number" id="led-wpm" value="14.4" step="0.1" min="0">
+          <div class="field-hint">Типовые значения: 4,8 / 9,6 / 14,4 / 19,2 / 24 Вт/м — зависит от плотности светодиодов</div>
+        </div>
+
+        <div class="field-group">
+          <label>Напряжение ленты</label>
+          <div class="toggle" id="led-toggle-voltage">
+            <button class="toggle-btn active" data-value="12">12 В</button>
+            <button class="toggle-btn" data-value="24">24 В</button>
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Запас мощности БП</label>
+          <div class="toggle" id="led-toggle-margin">
+            <button class="toggle-btn active" data-value="1.2">× 1,2</button>
+            <button class="toggle-btn" data-value="1.3">× 1,3</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row-2">
+          <div class="field-group">
+            <label>Длина провода БП→лента, м</label>
+            <input type="number" id="led-wirelength" value="3" step="0.1" min="0">
+          </div>
+          <div class="field-group">
+            <label>Доп. потеря U, %</label>
+            <input type="number" id="led-maxdrop" value="3" step="0.1" min="0.1">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="card diagram-card">
+        <svg id="led-diagram" viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="cableTubeGrad3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#7ff0ff"/>
+              <stop offset="30%" stop-color="#39e6ff"/>
+              <stop offset="62%" stop-color="#0f9bb0"/>
+              <stop offset="100%" stop-color="#053840"/>
+            </linearGradient>
+            <linearGradient id="bevelGrad3" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#262d38"/>
+              <stop offset="55%" stop-color="#171b22"/>
+              <stop offset="100%" stop-color="#0b0d11"/>
+            </linearGradient>
+            <filter id="neon3d3" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="shadowBlur"/>
+              <feOffset in="shadowBlur" dx="0" dy="7" result="shadowOffset"/>
+              <feComponentTransfer in="shadowOffset" result="shadowFaded">
+                <feFuncA type="linear" slope="0.55"/>
+              </feComponentTransfer>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="glow"/>
+              <feMerge>
+                <feMergeNode in="shadowFaded"/>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="softShadow3" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5"/>
+            </filter>
+          </defs>
+
+          <text id="led-txt-big" x="430" y="34" text-anchor="middle" font-size="24" font-weight="800" fill="#f7f4ee">БП 90 Вт · 12 В</text>
+          <text id="led-txt-small" x="430" y="56" text-anchor="middle" font-size="13" fill="#8b93a1">I = 6,0 А · S = 1,5 мм²</text>
+
+          <ellipse cx="90" cy="152" rx="50" ry="7" fill="#000" opacity="0.35" filter="url(#softShadow3)"/>
+          <rect x="40" y="95" width="100" height="52" rx="10" fill="url(#bevelGrad3)" stroke="rgba(255,255,255,0.14)" filter="url(#neon3d3)"/>
+          <rect x="42" y="97" width="96" height="14" rx="7" fill="rgba(255,255,255,0.05)"/>
+          <text x="90" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1">БЛОК ПИТАНИЯ</text>
+          <text id="led-txt-psu-value" x="90" y="136" text-anchor="middle" font-size="15" font-weight="800" fill="#39e6ff">90 Вт</text>
+
+          <ellipse cx="440" cy="132" rx="290" ry="8" fill="#000" opacity="0.3" filter="url(#softShadow3)"/>
+          <rect x="160" y="116" width="565" height="10" rx="5" fill="url(#cableTubeGrad3)" filter="url(#neon3d3)"/>
+          <rect x="162" y="117.5" width="561" height="2.5" rx="1.2" fill="rgba(255,255,255,0.55)"/>
+
+          <ellipse cx="782" cy="150" rx="52" ry="7" fill="#000" opacity="0.35" filter="url(#softShadow3)"/>
+          <rect x="735" y="108" width="95" height="24" rx="6" fill="url(#bevelGrad3)" stroke="rgba(255,255,255,0.14)" filter="url(#neon3d3)"/>
+          <circle cx="745" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
+          <circle cx="760" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
+          <circle cx="775" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
+          <circle cx="790" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
+          <circle cx="805" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
+          <circle cx="820" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
+          <text x="782" y="150" text-anchor="middle" font-size="11" fill="#8b93a1">LED-лента</text>
+        </svg>
+      </div>
+
+      <div class="info-banner" id="led-note">Для равномерной яркости не превышайте типовую длину одного луча запитки: ~5 м для 12 В и ~15 м для 24 В.</div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Ток ленты</div>
+          <div class="stat-value" id="led-stat-current">— А</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Блок питания</div>
+          <div class="stat-value green" id="led-stat-psu">— Вт</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Сечение провода</div>
+          <div class="stat-value" id="led-stat-section">— мм²</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Потеря напряжения</div>
+          <div class="stat-value accent" id="led-stat-drop">— %</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="disclaimer">Расчёт ориентировочный: мощность БП = длина × Вт/м × коэффициент запаса, округлена до ближайшего номинала из стандартного ряда. Сечение провода от БП до ленты подобрано по фактическому току ленты и допустимой потере напряжения (медь, без учёта падения напряжения внутри самой ленты — на длинных лентах оно тоже накапливается и снижает яркость к дальнему концу). Для проектной документации используйте расчёт квалифицированного специалиста.</p>
+  </div>
+
+  <div class="tab-panel" id="tab-lux" style="display:none">
+  <div class="grid">
+    <div class="col-left">
+      <div class="card">
+        <div class="field-group">
+          <label>Тип помещения</label>
+          <select id="lux-roomtype">
+            <option value="living" selected>Гостиная / зал</option>
+            <option value="bedroom">Спальня</option>
+            <option value="kitchen">Кухня</option>
+            <option value="kids">Детская</option>
+            <option value="office">Кабинет / рабочее место</option>
+            <option value="bathroom">Ванная / санузел</option>
+            <option value="hallway">Прихожая / коридор</option>
+            <option value="garage">Мастерская / гараж</option>
+          </select>
+        </div>
+
+        <div class="row-2">
+          <div class="field-group">
+            <label>Площадь, м²</label>
+            <input type="number" id="lux-area" value="15" step="0.5" min="0">
+          </div>
+          <div class="field-group">
+            <label>Высота потолка, м</label>
+            <input type="number" id="lux-height" value="2.7" step="0.1" min="1.5">
+          </div>
+        </div>
+
+        <div class="field-group">
+          <label>Запас на старение ламп</label>
+          <div class="toggle" id="lux-toggle-margin">
+            <button class="toggle-btn" data-value="1.1">× 1,1</button>
+            <button class="toggle-btn active" data-value="1.2">× 1,2</button>
+            <button class="toggle-btn" data-value="1.3">× 1,3</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="field-group">
+          <label>Световой поток одной лампы, лм</label>
+          <input type="number" id="lux-lamplumens" value="800" step="10" min="1">
+          <div class="field-hint">Типовая LED-груша ~800–850 лм (≈60 Вт по старой шкале накаливания), потолочная панель 36 Вт ~3000 лм</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="card diagram-card">
+        <svg id="lux-diagram" viewBox="0 0 860 240" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bevelGrad4" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#262d38"/>
+              <stop offset="55%" stop-color="#171b22"/>
+              <stop offset="100%" stop-color="#0b0d11"/>
+            </linearGradient>
+            <radialGradient id="glowWash4" cx="50%" cy="50%" r="55%">
+              <stop offset="0%"  stop-color="#39e6ff" stop-opacity="0.38"/>
+              <stop offset="55%" stop-color="#39e6ff" stop-opacity="0.10"/>
+              <stop offset="100%" stop-color="#39e6ff" stop-opacity="0"/>
+            </radialGradient>
+            <filter id="neon3d4" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="shadowBlur"/>
+              <feOffset in="shadowBlur" dx="0" dy="7" result="shadowOffset"/>
+              <feComponentTransfer in="shadowOffset" result="shadowFaded">
+                <feFuncA type="linear" slope="0.55"/>
+              </feComponentTransfer>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="glow"/>
+              <feMerge>
+                <feMergeNode in="shadowFaded"/>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="softShadow4" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5"/>
+            </filter>
+            <clipPath id="roomClip4"><rect x="230" y="78" width="400" height="130" rx="12"/></clipPath>
+          </defs>
+
+          <text id="lux-txt-big" x="430" y="34" text-anchor="middle" font-size="24" font-weight="800" fill="#f7f4ee">2 700 лм</text>
+          <text id="lux-txt-small" x="430" y="56" text-anchor="middle" font-size="13" fill="#8b93a1">150 лк · 15 м² · h = 2,7 м</text>
+
+          <ellipse cx="430" cy="220" rx="210" ry="9" fill="#000" opacity="0.35" filter="url(#softShadow4)"/>
+          <rect x="230" y="78" width="400" height="130" rx="12" fill="url(#bevelGrad4)" stroke="rgba(255,255,255,0.14)"/>
+          <g clip-path="url(#roomClip4)">
+            <circle cx="430" cy="143" r="140" fill="url(#glowWash4)"/>
+          </g>
+          <rect x="230" y="78" width="400" height="130" rx="12" fill="none" stroke="rgba(255,255,255,0.14)"/>
+
+          <g filter="url(#neon3d4)">
+            <line x1="445" y1="143" x2="456" y2="143" stroke="#39e6ff" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="440.6" y1="153.6" x2="448.4" y2="161.4" stroke="#39e6ff" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="430" y1="158" x2="430" y2="169" stroke="#39e6ff" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="419.4" y1="153.6" x2="411.6" y2="161.4" stroke="#39e6ff" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="415" y1="143" x2="404" y2="143" stroke="#39e6ff" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="419.4" y1="132.4" x2="411.6" y2="124.6" stroke="#39e6ff" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="430" y1="128" x2="430" y2="117" stroke="#39e6ff" stroke-width="2.4" stroke-linecap="round"/>
+            <line x1="440.6" y1="132.4" x2="448.4" y2="124.6" stroke="#39e6ff" stroke-width="2.4" stroke-linecap="round"/>
+            <circle cx="430" cy="143" r="11" fill="#eaffff"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="info-banner" id="lux-note">Учтены поправки: высота потолка × 1,0, запас на старение ламп × 1,2.</div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Нужный поток</div>
+          <div class="stat-value accent" id="lux-stat-lumens">— лм</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Норма освещённости</div>
+          <div class="stat-value" id="lux-stat-lux">— лк</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">≈ LED-мощность</div>
+          <div class="stat-value green" id="lux-stat-watts">— Вт</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Кол-во ламп</div>
+          <div class="stat-value" id="lux-stat-count">— шт</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="disclaimer">Расчёт ориентировочный: нужный световой поток = норма освещённости (по типу помещения, аналог СП 52.13330) × площадь × поправка на высоту потолка × запас на старение ламп. Не учитывает коэффициент использования светового потока, отражающие свойства стен и потолка, расположение окон и цветовую температуру. Эквивалент в ваттах — из расчёта ~100 лм/Вт для современных LED-источников. Для точного проекта освещения используйте расчёт квалифицированного специалиста.</p>
+  </div>
+
+  <div class="tab-panel" id="tab-group" style="display:none">
+  <div class="grid">
+    <div class="col-left">
+      <div class="card">
+        <div class="field-group">
+          <label>Номинал автомата группы</label>
+          <div class="toggle" id="grp-toggle-breaker">
+            <button class="toggle-btn" data-value="10">10 А</button>
+            <button class="toggle-btn active" data-value="16">16 А</button>
+            <button class="toggle-btn" data-value="20">20 А</button>
+            <button class="toggle-btn" data-value="25">25 А</button>
+          </div>
+          <div class="field-hint">Сеть 1~220 В — стандартная бытовая розеточная группа</div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="field-group"><label>Приборы в группе</label></div>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="2000" checked><span>Чайник</span><b>2000 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1000"><span>Микроволновка</span><b>1000 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="850"><span>Тостер</span><b>850 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1800"><span>Фен</span><b>1800 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="2000"><span>Обогреватель</span><b>2000 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1400"><span>Пылесос</span><b>1400 Вт</b></label>
+        <label class="appliance-row appliance-row-custom">
+          <input type="checkbox" id="grp-custom-check">
+          <span>Свой прибор</span>
+          <input type="number" id="grp-custom-watts" value="500" min="0" step="10">
+        </label>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="card diagram-card">
+        <svg id="grp-diagram" viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bevelGrad5" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#262d38"/>
+              <stop offset="55%" stop-color="#171b22"/>
+              <stop offset="100%" stop-color="#0b0d11"/>
+            </linearGradient>
+            <filter id="neon3d5" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="shadowBlur"/>
+              <feOffset in="shadowBlur" dx="0" dy="7" result="shadowOffset"/>
+              <feComponentTransfer in="shadowOffset" result="shadowFaded">
+                <feFuncA type="linear" slope="0.55"/>
+              </feComponentTransfer>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="glow"/>
+              <feMerge>
+                <feMergeNode in="shadowFaded"/>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="softShadow5" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5"/>
+            </filter>
+          </defs>
+
+          <text id="grp-txt-big" x="430" y="34" text-anchor="middle" font-size="24" font-weight="800" fill="#f7f4ee">2 000 Вт из 3 520 Вт</text>
+          <text id="grp-txt-small" x="430" y="56" text-anchor="middle" font-size="13" fill="#8b93a1">свободно 816 Вт · автомат 16 А</text>
+
+          <ellipse cx="85" cy="152" rx="46" ry="7" fill="#000" opacity="0.35" filter="url(#softShadow5)"/>
+          <rect x="40" y="95" width="90" height="52" rx="10" fill="url(#bevelGrad5)" stroke="rgba(255,255,255,0.14)" filter="url(#neon3d5)"/>
+          <rect x="42" y="97" width="86" height="14" rx="7" fill="rgba(255,255,255,0.05)"/>
+          <text x="85" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1">АВТОМАТ</text>
+          <text id="grp-txt-breaker-value" x="85" y="136" text-anchor="middle" font-size="15" font-weight="800" fill="#39e6ff">16 А</text>
+
+          <ellipse cx="475" cy="150" rx="310" ry="8" fill="#000" opacity="0.3" filter="url(#softShadow5)"/>
+          <rect x="170" y="108" width="610" height="26" rx="13" fill="url(#bevelGrad5)" stroke="rgba(255,255,255,0.14)"/>
+          <line id="grp-marker-80" x1="658" y1="100" x2="658" y2="150" stroke="rgba(255,255,255,0.3)" stroke-width="1.4" stroke-dasharray="3,3"/>
+          <text x="658" y="94" text-anchor="middle" font-size="10" fill="#8b93a1">80%</text>
+          <rect id="grp-fill" x="170" y="108" width="0" height="26" rx="13" fill="#39e6ff" filter="url(#neon3d5)"/>
+        </svg>
+      </div>
+
+      <div class="info-banner" id="grp-note">В пределах нормы.</div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Общая мощность</div>
+          <div class="stat-value" id="grp-stat-total">— Вт</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Ток нагрузки</div>
+          <div class="stat-value" id="grp-stat-current">— А</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Автомат группы</div>
+          <div class="stat-value green" id="grp-stat-breaker">— А</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Запас до 80%</div>
+          <div class="stat-value accent" id="grp-stat-remaining">— Вт</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="disclaimer">Расчёт ориентировочный: располагаемая мощность = 220 В × номинал автомата. Рекомендуемый предел длительной нагрузки — 80% от этой величины (частая практика для защиты от перегрева при постоянной работе, а не только кратковременных пиков). Не учитывает одновременность включения на практике (коэффициент спроса), пусковые токи приборов с двигателем и реальный cos φ смешанной нагрузки. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
+  </div>
+
+  <div class="tab-panel" id="tab-pipe" style="display:none">
+  <div class="grid">
+    <div class="col-left">
+      <div class="card">
+        <div class="field-group">
+          <label>Труба / гофра</label>
+          <select id="pipe-size">
+            <option value="16">⌀16 мм (внутр. 11,2 мм)</option>
+            <option value="20">⌀20 мм (внутр. 15 мм)</option>
+            <option value="25">⌀25 мм (внутр. 19 мм)</option>
+            <option value="32" selected>⌀32 мм (внутр. 25 мм)</option>
+            <option value="40">⌀40 мм (внутр. 32 мм)</option>
+            <option value="50">⌀50 мм (внутр. 41 мм)</option>
+            <option value="63">⌀63 мм (внутр. 51 мм)</option>
+            <option value="custom">Свой внутренний диаметр…</option>
+          </select>
+        </div>
+        <div class="field-group" id="pipe-field-custom" style="display:none">
+          <label>Внутренний диаметр трубы, мм</label>
+          <input type="number" id="pipe-custom-diameter" value="20" step="0.5" min="1">
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="row-2">
+          <div class="field-group">
+            <label>Диаметр кабеля (по оболочке), мм</label>
+            <input type="number" id="pipe-cable-diameter" value="8" step="0.5" min="0.5">
+          </div>
+          <div class="field-group">
+            <label>Количество кабелей</label>
+            <input type="number" id="pipe-cable-count" value="3" step="1" min="1">
+          </div>
+        </div>
+        <div class="field-hint">Диаметр кабеля обычно указан в его маркировке или на упаковке; для ВВГнг 3×2,5 — около 10–11 мм, для 3×1,5 — около 9 мм. Точнее — измерить штангенциркулем.</div>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="card diagram-card">
+        <svg id="pipe-diagram" viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bevelGrad6" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0%"  stop-color="#262d38"/>
+              <stop offset="55%" stop-color="#171b22"/>
+              <stop offset="100%" stop-color="#0b0d11"/>
+            </linearGradient>
+            <filter id="neon3d6" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="shadowBlur"/>
+              <feOffset in="shadowBlur" dx="0" dy="7" result="shadowOffset"/>
+              <feComponentTransfer in="shadowOffset" result="shadowFaded">
+                <feFuncA type="linear" slope="0.55"/>
+              </feComponentTransfer>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="glow"/>
+              <feMerge>
+                <feMergeNode in="shadowFaded"/>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="softShadow6" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5"/>
+            </filter>
+          </defs>
+
+          <text id="pipe-txt-big" x="430" y="34" text-anchor="middle" font-size="24" font-weight="800" fill="#f7f4ee">31% заполнения</text>
+          <text id="pipe-txt-small" x="430" y="56" text-anchor="middle" font-size="13" fill="#8b93a1">3 каб. × ⌀10 мм в трубе ⌀15 мм</text>
+
+          <ellipse cx="85" cy="152" rx="46" ry="7" fill="#000" opacity="0.35" filter="url(#softShadow6)"/>
+          <rect x="40" y="95" width="90" height="52" rx="10" fill="url(#bevelGrad6)" stroke="rgba(255,255,255,0.14)" filter="url(#neon3d6)"/>
+          <rect x="42" y="97" width="86" height="14" rx="7" fill="rgba(255,255,255,0.05)"/>
+          <text x="85" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1">ТРУБА</text>
+          <text id="pipe-txt-diam-value" x="85" y="136" text-anchor="middle" font-size="15" font-weight="800" fill="#39e6ff">15 мм</text>
+
+          <ellipse cx="475" cy="150" rx="310" ry="8" fill="#000" opacity="0.3" filter="url(#softShadow6)"/>
+          <rect x="170" y="108" width="610" height="26" rx="13" fill="url(#bevelGrad6)" stroke="rgba(255,255,255,0.14)"/>
+          <line id="pipe-marker-allowed" x1="359" y1="100" x2="359" y2="150" stroke="rgba(255,255,255,0.3)" stroke-width="1.4" stroke-dasharray="3,3"/>
+          <text id="pipe-marker-label" x="359" y="94" text-anchor="middle" font-size="10" fill="#8b93a1">31%</text>
+          <rect id="pipe-fill" x="170" y="108" width="0" height="26" rx="13" fill="#39e6ff" filter="url(#neon3d6)"/>
+        </svg>
+      </div>
+
+      <div class="info-banner" id="pipe-note">В пределах нормы.</div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Заполнение трубы</div>
+          <div class="stat-value accent" id="pipe-stat-fill">— %</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Норма для N кабелей</div>
+          <div class="stat-value green" id="pipe-stat-allowed">— %</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Влезет кабелей (макс)</div>
+          <div class="stat-value" id="pipe-stat-max">— шт</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Труба, внутр.</div>
+          <div class="stat-value" id="pipe-stat-diam">— мм</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="disclaimer">Расчёт ориентировочный: норма заполнения — общепринятое правило (аналог таблиц заполнения по NEC Chapter 9, широко используемое и в отечественной практике): 1 кабель — до 53% сечения трубы, 2 кабеля — до 31%, 3 и более — до 40%. Не учитывает реальную форму кабелей в сечении (не всегда круглая для многожильных), трудность затяжки на поворотах и длинных трассах, а также требования конкретного проекта. Диаметр кабеля нужно уточнять по факту — оболочки одного сечения жил у разных производителей отличаются.</p>
+  </div>
+
+  <div class="tab-panel" id="tab-phase" style="display:none">
+  <div class="grid">
+    <div class="col-left">
+      <div class="card">
+        <div class="field-group"><label>Нагрузки, Вт (0 — не используется)</label></div>
+        <div class="phase-inputs-grid">
+          <div class="phase-input-row"><span>Нагрузка 1</span><input type="number" id="ph-load-0" value="2000" step="50" min="0"></div>
+          <div class="phase-input-row"><span>Нагрузка 2</span><input type="number" id="ph-load-1" value="1500" step="50" min="0"></div>
+          <div class="phase-input-row"><span>Нагрузка 3</span><input type="number" id="ph-load-2" value="3500" step="50" min="0"></div>
+          <div class="phase-input-row"><span>Нагрузка 4</span><input type="number" id="ph-load-3" value="1000" step="50" min="0"></div>
+          <div class="phase-input-row"><span>Нагрузка 5</span><input type="number" id="ph-load-4" value="2500" step="50" min="0"></div>
+          <div class="phase-input-row"><span>Нагрузка 6</span><input type="number" id="ph-load-5" value="800" step="50" min="0"></div>
+          <div class="phase-input-row"><span>Нагрузка 7</span><input type="number" id="ph-load-6" value="0" step="50" min="0"></div>
+          <div class="phase-input-row"><span>Нагрузка 8</span><input type="number" id="ph-load-7" value="0" step="50" min="0"></div>
+        </div>
+        <div class="field-hint">Например: группы розеток, освещение, водонагреватель, тёплый пол — каждая однофазная линия отдельной строкой</div>
+      </div>
+    </div>
+
+    <div class="col-right">
+      <div class="card diagram-card">
+        <svg id="phase-diagram" viewBox="0 0 860 200" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="neon3d7" x="-80%" y="-80%" width="260%" height="260%">
+              <feGaussianBlur in="SourceAlpha" stdDeviation="4" result="shadowBlur"/>
+              <feOffset in="shadowBlur" dx="0" dy="7" result="shadowOffset"/>
+              <feComponentTransfer in="shadowOffset" result="shadowFaded">
+                <feFuncA type="linear" slope="0.55"/>
+              </feComponentTransfer>
+              <feGaussianBlur in="SourceGraphic" stdDeviation="2.5" result="glow"/>
+              <feMerge>
+                <feMergeNode in="shadowFaded"/>
+                <feMergeNode in="glow"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+            <filter id="softShadow7" x="-60%" y="-60%" width="220%" height="220%">
+              <feGaussianBlur stdDeviation="5"/>
+            </filter>
+          </defs>
+
+          <text id="phase-txt-big" x="430" y="34" text-anchor="middle" font-size="24" font-weight="800" fill="#f7f4ee">Перекос 0%</text>
+          <text id="phase-txt-small" x="430" y="56" text-anchor="middle" font-size="13" fill="#8b93a1">мин 0 Вт · макс 0 Вт · среднее 0 Вт</text>
+
+          <line x1="170" y1="170" x2="690" y2="170" stroke="rgba(255,255,255,0.14)" stroke-width="1.4"/>
+
+          <ellipse cx="250" cy="176" rx="55" ry="7" fill="#000" opacity="0.3" filter="url(#softShadow7)"/>
+          <text id="phase-bar-a-label" x="250" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#39e6ff">A · 0 Вт</text>
+          <rect id="phase-bar-a" x="190" y="170" width="120" height="0" rx="8" fill="#39e6ff" filter="url(#neon3d7)"/>
+          <text x="250" y="186" text-anchor="middle" font-size="10" fill="#8b93a1">ФАЗА A</text>
+
+          <ellipse cx="430" cy="176" rx="55" ry="7" fill="#000" opacity="0.3" filter="url(#softShadow7)"/>
+          <text id="phase-bar-b-label" x="430" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#39e6ff">B · 0 Вт</text>
+          <rect id="phase-bar-b" x="370" y="170" width="120" height="0" rx="8" fill="#39e6ff" filter="url(#neon3d7)"/>
+          <text x="430" y="186" text-anchor="middle" font-size="10" fill="#8b93a1">ФАЗА B</text>
+
+          <ellipse cx="610" cy="176" rx="55" ry="7" fill="#000" opacity="0.3" filter="url(#softShadow7)"/>
+          <text id="phase-bar-c-label" x="610" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#39e6ff">C · 0 Вт</text>
+          <rect id="phase-bar-c" x="550" y="170" width="120" height="0" rx="8" fill="#39e6ff" filter="url(#neon3d7)"/>
+          <text x="610" y="186" text-anchor="middle" font-size="10" fill="#8b93a1">ФАЗА C</text>
+        </svg>
+      </div>
+
+      <div class="info-banner" id="phase-note">Добавьте нагрузки, чтобы увидеть распределение.</div>
+
+      <div class="stats-row">
+        <div class="stat-card">
+          <div class="stat-label">Фаза A</div>
+          <div class="stat-value" id="phase-stat-a">— Вт</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Фаза B</div>
+          <div class="stat-value" id="phase-stat-b">— Вт</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Фаза C</div>
+          <div class="stat-value" id="phase-stat-c">— Вт</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Перекос</div>
+          <div class="stat-value accent" id="phase-stat-imbalance">— %</div>
+        </div>
+      </div>
+
+      <div class="phase-columns">
+        <div class="phase-col">
+          <div class="phase-col-header">Фаза A</div>
+          <div class="phase-col-items" id="phase-items-a">—</div>
+          <div class="phase-col-total" id="phase-total-a">0 Вт</div>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-header">Фаза B</div>
+          <div class="phase-col-items" id="phase-items-b">—</div>
+          <div class="phase-col-total" id="phase-total-b">0 Вт</div>
+        </div>
+        <div class="phase-col">
+          <div class="phase-col-header">Фаза C</div>
+          <div class="phase-col-items" id="phase-items-c">—</div>
+          <div class="phase-col-total" id="phase-total-c">0 Вт</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <p class="disclaimer">Расчёт ориентировочный: нагрузки распределяются жадным алгоритмом — каждая следующая (начиная с самой мощной) уходит на фазу с наименьшей текущей загрузкой. Это даёт результат, очень близкий к оптимальному, но не гарантирует математический идеал в каждом случае. Не учитывает реальную одновременность включения нагрузок, пусковые токи и то, что часть групп физически удобнее развести иначе (например, по расположению в щите). Перекос считается как (макс − мин) / среднее; ориентир — не более ~15%. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
+  </div>
 </div>
 
 <script>
@@ -525,6 +1327,515 @@
 
   syncMotorFieldsState();
   recalc();
+})();
+
+// ---- переключение вкладок ----
+(function(){
+  document.querySelectorAll('.main-tab-btn').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      document.querySelectorAll('.main-tab-btn').forEach(b=>b.classList.remove('active'));
+      btn.classList.add('active');
+      document.querySelectorAll('.tab-panel').forEach(p=>{ p.style.display = 'none'; });
+      document.getElementById('tab-' + btn.dataset.tab).style.display = '';
+    });
+  });
+})();
+
+// ---- калькулятор «УЗО + автомат» ----
+(function(){
+  const BREAKERS     = [6,10,16,20,25,32,40,50,63,80,100,125,160,200,250,320,400];
+  const RCD_RATINGS  = [16,25,32,40,63,80,100,125];
+
+  const LINE_TYPES = {
+    sockets_dry: { mA: 30,  note: 'Стандартная защита розеточных групп в сухих жилых комнатах — 30 мА.' },
+    wet:         { mA: 10,  note: 'Повышенная чувствительность обязательна во влажных зонах: ванная, кухня у мойки, бассейн.' },
+    stationary:  { mA: 30,  note: 'Для плиты и водонагревателя обычно достаточно 30 мА; если техника стоит в санузле — используйте 10 мА.' },
+    lighting:    { mA: 30,  note: 'По ПУЭ для чисто осветительных групп УЗО не обязательно, но не будет лишним для дополнительной защиты.' },
+    main:        { mA: 100, note: 'Это противопожарное УЗО на вводе — оно не заменяет групповые 10/30 мА, а дополняет их. Для селективности вводное УЗО должно быть минимум втрое менее чувствительным, чем групповые (100 мА при групповых 30 мА).' },
+    outdoor:     { mA: 30,  note: 'В особо сырых помещениях (баня, погреб, улица под дождём) рассмотрите 10 мА.' }
+  };
+
+  const rState = { network:'1', loadType:'power' };
+  const rel  = id => document.getElementById(id);
+  const rfmt = (n, d=1) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+
+  function rBindToggle(containerId, onChange){
+    const container = rel(containerId);
+    container.querySelectorAll('.toggle-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        container.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        onChange(btn.dataset.value);
+        rRecalc();
+      });
+    });
+  }
+
+  rBindToggle('rcd-toggle-network', v=>{ rState.network = v; });
+  rBindToggle('rcd-toggle-loadtype', v=>{
+    rState.loadType = v;
+    rel('rcd-field-power').style.display   = v==='power'   ? '' : 'none';
+    rel('rcd-field-current').style.display = v==='current' ? '' : 'none';
+  });
+
+  ['rcd-power','rcd-current','rcd-cosphi'].forEach(id=>{
+    rel(id).addEventListener('input', rRecalc);
+  });
+  rel('rcd-linetype').addEventListener('change', rRecalc);
+
+  function rCalcCurrent(){
+    if (rState.loadType === 'current'){
+      return parseFloat(rel('rcd-current').value) || 0;
+    }
+    const cosphi = parseFloat(rel('rcd-cosphi').value) || 1;
+    const Pw = (parseFloat(rel('rcd-power').value) || 0) * 1000;
+    if (rState.network === '1'){
+      return Pw / (220 * cosphi);
+    }
+    return Pw / (Math.sqrt(3) * 380 * cosphi);
+  }
+
+  function rRecalc(){
+    const I = rCalcCurrent();
+    const safeI = I > 0 ? I : 0.001;
+    const breaker = BREAKERS.find(b => b >= safeI) || BREAKERS[BREAKERS.length-1];
+    const rcd = RCD_RATINGS.find(r => r >= breaker) || RCD_RATINGS[RCD_RATINGS.length-1];
+    const type = LINE_TYPES[rel('rcd-linetype').value];
+
+    rel('rcd-stat-current').textContent = rfmt(I,1) + ' А';
+    rel('rcd-stat-breaker').textContent = breaker + ' А';
+    rel('rcd-stat-rcd').textContent = rcd + ' А';
+    rel('rcd-stat-ma').textContent = type.mA + ' мА';
+    rel('rcd-note').textContent = type.note;
+
+    rel('rcd-txt-big').textContent = 'АВ ' + breaker + ' А · УЗО ' + rcd + ' А';
+    rel('rcd-txt-small').textContent = 'чувствительность ' + type.mA + ' мА · I = ' + rfmt(I,1) + ' А';
+    rel('rcd-txt-av-value').textContent = breaker + ' А';
+    rel('rcd-txt-rcd-value').textContent = rcd + ' А';
+    rel('rcd-txt-rcd-ma').textContent = type.mA + ' мА';
+  }
+
+  rRecalc();
+})();
+
+// ---- калькулятор «БП для LED-ленты» ----
+(function(){
+  const GAMMA_CU = 56; // проводимость меди, м/(Ом·мм²)
+  const LED_SECTIONS  = [0.5, 0.75, 1, 1.5, 2.5, 4, 6, 10];
+  const LED_AMPACITY  = {0.5:11, 0.75:15, 1:17, 1.5:19, 2.5:27, 4:38, 6:46, 10:70};
+  const PSU_WATTS = [12,18,24,30,36,40,45,50,60,72,75,96,100,120,150,180,200,250,300,350,400,500];
+
+  const lState = { voltage:12, margin:1.2 };
+  const lel  = id => document.getElementById(id);
+  const lfmt = (n, d=1) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+
+  function lBindToggle(containerId, onChange){
+    const container = lel(containerId);
+    container.querySelectorAll('.toggle-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        container.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        onChange(btn.dataset.value);
+        lRecalc();
+      });
+    });
+  }
+
+  lBindToggle('led-toggle-voltage', v=>{ lState.voltage = parseFloat(v); });
+  lBindToggle('led-toggle-margin',  v=>{ lState.margin  = parseFloat(v); });
+
+  ['led-length','led-wpm','led-wirelength','led-maxdrop'].forEach(id=>{
+    lel(id).addEventListener('input', lRecalc);
+  });
+
+  function lRecalc(){
+    const length   = parseFloat(lel('led-length').value) || 0;
+    const wpm      = parseFloat(lel('led-wpm').value) || 0;
+    const wireLen  = parseFloat(lel('led-wirelength').value) || 0;
+    let maxDrop    = parseFloat(lel('led-maxdrop').value);
+    if (isNaN(maxDrop)) maxDrop = 3;
+
+    const stripPower = length * wpm;                 // фактическая мощность ленты, Вт
+    const I = lState.voltage > 0 ? stripPower / lState.voltage : 0; // ток ленты, А
+    const psuRequired = stripPower * lState.margin;   // требуемая мощность БП с запасом
+    const psu = PSU_WATTS.find(w => w >= psuRequired) || PSU_WATTS[PSU_WATTS.length-1];
+
+    // подбор сечения провода БП -> лента
+    const safeI = I > 0 ? I : 0.001;
+    let chosen = null;
+    for (const s of LED_SECTIONS){
+      const amp = LED_AMPACITY[s];
+      if (amp < safeI) continue;
+      const dropV = (2 * wireLen * safeI) / (GAMMA_CU * s);
+      const dropPct = lState.voltage > 0 ? (dropV / lState.voltage * 100) : 0;
+      if (dropPct <= maxDrop){ chosen = { s, dropPct, warning:false }; break; }
+    }
+    if (!chosen){
+      const s = LED_SECTIONS[LED_SECTIONS.length-1];
+      const dropV = (2 * wireLen * safeI) / (GAMMA_CU * s);
+      const dropPct = lState.voltage > 0 ? (dropV / lState.voltage * 100) : 0;
+      chosen = { s, dropPct, warning:true };
+    }
+
+    lel('led-stat-current').textContent = lfmt(I,2) + ' А';
+    lel('led-stat-psu').textContent = psu + ' Вт';
+    lel('led-stat-section').textContent = chosen.s.toLocaleString('ru-RU') + ' мм²';
+    lel('led-stat-drop').textContent = lfmt(chosen.dropPct,1) + ' %';
+    lel('led-stat-drop').classList.toggle('warn', chosen.warning);
+    lel('led-stat-drop').classList.toggle('accent', !chosen.warning);
+
+    lel('led-txt-big').textContent = 'БП ' + psu + ' Вт · ' + lState.voltage + ' В';
+    lel('led-txt-small').textContent = 'I = ' + lfmt(I,2) + ' А · S = ' + chosen.s.toLocaleString('ru-RU') + ' мм²';
+    lel('led-txt-psu-value').textContent = psu + ' Вт';
+
+    // подсказка по максимальной длине одного луча запитки
+    const limit = lState.voltage === 12 ? 5 : 15;
+    if (chosen.warning){
+      lel('led-note').textContent = 'Даже максимальное сечение из ряда (' + chosen.s.toLocaleString('ru-RU') + ' мм²) не укладывается в допустимую потерю напряжения — провод от БП до ленты слишком длинный. Сократите длину провода, увеличьте допустимую потерю или перенесите БП ближе к ленте.';
+    } else if (length > limit){
+      lel('led-note').textContent = 'Длина ленты (' + lfmt(length,1) + ' м) превышает типовой предел одного луча запитки (~' + limit + ' м для ' + lState.voltage + ' В) — яркость и цвет могут заметно проседать к дальнему концу. Рассмотрите запитку с двух сторон' + (lState.voltage===12 ? ' или переход на 24 В' : '') + '.';
+    } else {
+      lel('led-note').textContent = 'Для равномерной яркости не превышайте типовую длину одного луча запитки: ~5 м для 12 В и ~15 м для 24 В.';
+    }
+    lel('led-note').classList.toggle('danger', chosen.warning);
+  }
+
+  lRecalc();
+})();
+
+// ---- калькулятор «Освещённость помещения» ----
+(function(){
+  const ROOM_TYPES = {
+    living:   { label: 'Гостиная / зал',            lux: 150 },
+    bedroom:  { label: 'Спальня',                   lux: 100 },
+    kitchen:  { label: 'Кухня',                     lux: 150 },
+    kids:     { label: 'Детская',                   lux: 200 },
+    office:   { label: 'Кабинет / рабочее место',   lux: 300 },
+    bathroom: { label: 'Ванная / санузел',          lux: 50  },
+    hallway:  { label: 'Прихожая / коридор',        lux: 50  },
+    garage:   { label: 'Мастерская / гараж',        lux: 200 }
+  };
+  const LED_EFFICACY = 100; // лм/Вт, ориентировочно для современных LED
+
+  const xState = { margin: 1.2 };
+  const xel  = id => document.getElementById(id);
+  const xfmt = (n, d=0) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+
+  function xBindToggle(containerId, onChange){
+    const container = xel(containerId);
+    container.querySelectorAll('.toggle-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        container.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        onChange(btn.dataset.value);
+        xRecalc();
+      });
+    });
+  }
+
+  xBindToggle('lux-toggle-margin', v=>{ xState.margin = parseFloat(v); });
+
+  ['lux-area','lux-height','lux-lamplumens'].forEach(id=>{
+    xel(id).addEventListener('input', xRecalc);
+  });
+  xel('lux-roomtype').addEventListener('change', xRecalc);
+
+  function heightFactor(h){
+    if (h <= 2.7) return 1.0;
+    if (h <= 3.0) return 1.2;
+    if (h <= 3.5) return 1.5;
+    return 2.0;
+  }
+
+  function xRecalc(){
+    const area   = parseFloat(xel('lux-area').value) || 0;
+    const height = parseFloat(xel('lux-height').value) || 2.7;
+    const lampLm = parseFloat(xel('lux-lamplumens').value) || 0;
+    const room = ROOM_TYPES[xel('lux-roomtype').value];
+    const kHeight = heightFactor(height);
+
+    const lumens = room.lux * area * kHeight * xState.margin;
+    const watts = lumens / LED_EFFICACY;
+    const count = lampLm > 0 ? Math.ceil(lumens / lampLm) : 0;
+
+    xel('lux-stat-lumens').textContent = xfmt(lumens,0) + ' лм';
+    xel('lux-stat-lux').textContent = room.lux + ' лк';
+    xel('lux-stat-watts').textContent = xfmt(watts,0) + ' Вт';
+    xel('lux-stat-count').textContent = count + ' шт';
+
+    xel('lux-txt-big').textContent = xfmt(lumens,0) + ' лм';
+    xel('lux-txt-small').textContent = room.lux + ' лк · ' + xfmt(area,1) + ' м² · h = ' + xfmt(height,1) + ' м';
+
+    let note = 'Учтены поправки: высота потолка × ' + xfmt(kHeight,1) + ', запас на старение ламп × ' + xfmt(xState.margin,1) + '.';
+    if (kHeight > 1.0){
+      note += ' При потолке выше 2,7 м освещённость на полу заметно падает — поэтому поправка увеличена.';
+    }
+    xel('lux-note').textContent = note;
+  }
+
+  xRecalc();
+})();
+
+// ---- калькулятор «Розеточная группа» ----
+(function(){
+  const VOLTAGE = 220;
+  const SAFE_RATIO = 0.8; // рекомендуемый предел длительной нагрузки от номинала автомата
+
+  const gState = { breaker: 16 };
+  const gel  = id => document.getElementById(id);
+  const gfmt = (n, d=0) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+
+  function gBindToggle(containerId, onChange){
+    const container = gel(containerId);
+    container.querySelectorAll('.toggle-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        container.querySelectorAll('.toggle-btn').forEach(b=>b.classList.remove('active'));
+        btn.classList.add('active');
+        onChange(btn.dataset.value);
+        gRecalc();
+      });
+    });
+  }
+
+  gBindToggle('grp-toggle-breaker', v=>{ gState.breaker = parseFloat(v); });
+
+  document.querySelectorAll('.grp-appliance').forEach(cb=>{
+    cb.addEventListener('change', gRecalc);
+  });
+  gel('grp-custom-check').addEventListener('change', gRecalc);
+  gel('grp-custom-watts').addEventListener('input', gRecalc);
+
+  function gRecalc(){
+    const breakerPower = VOLTAGE * gState.breaker;
+    const safePower = breakerPower * SAFE_RATIO;
+
+    let total = 0;
+    document.querySelectorAll('.grp-appliance:checked').forEach(cb=>{
+      total += parseFloat(cb.dataset.watts) || 0;
+    });
+    if (gel('grp-custom-check').checked){
+      total += parseFloat(gel('grp-custom-watts').value) || 0;
+    }
+
+    const current = total / VOLTAGE;
+    const remaining = safePower - total;
+
+    let overloaded = total > breakerPower;
+    let caution = !overloaded && total > safePower;
+
+    let note;
+    if (overloaded){
+      note = 'Перегрузка: суммарная мощность (' + gfmt(total) + ' Вт) превышает возможности автомата (' + gfmt(breakerPower) + ' Вт) — он отключится.';
+    } else if (caution){
+      note = 'Автомат не отключится, но нагрузка выше рекомендуемых 80% (' + gfmt(safePower) + ' Вт) для длительной работы — не держите такую комбинацию включённой подолгу.';
+    } else {
+      note = 'В пределах нормы — ещё можно добавить примерно ' + gfmt(remaining) + ' Вт в пределах рекомендуемых 80% от автомата.';
+    }
+
+    gel('grp-stat-total').textContent = gfmt(total) + ' Вт';
+    gel('grp-stat-current').textContent = gfmt(current,1) + ' А';
+    gel('grp-stat-breaker').textContent = gState.breaker + ' А';
+    gel('grp-stat-remaining').textContent = (remaining < 0 ? '−' : '') + gfmt(Math.abs(remaining)) + ' Вт';
+    gel('grp-stat-remaining').classList.toggle('warn', overloaded || caution);
+    gel('grp-stat-remaining').classList.toggle('accent', !overloaded && !caution);
+
+    gel('grp-note').textContent = note;
+    gel('grp-note').classList.toggle('danger', overloaded);
+
+    gel('grp-txt-big').textContent = gfmt(total) + ' Вт из ' + gfmt(breakerPower) + ' Вт';
+    gel('grp-txt-small').textContent = (remaining < 0 ? 'перегрузка на ' + gfmt(Math.abs(remaining)) + ' Вт' : 'свободно ' + gfmt(remaining) + ' Вт') + ' · автомат ' + gState.breaker + ' А';
+    gel('grp-txt-breaker-value').textContent = gState.breaker + ' А';
+
+    const trackX = 170, trackW = 610;
+    const fillW = Math.max(0, Math.min(total / breakerPower, 1)) * trackW;
+    const fillEl = gel('grp-fill');
+    fillEl.setAttribute('width', fillW.toFixed(1));
+    fillEl.setAttribute('fill', overloaded ? '#e8827a' : (caution ? '#ffb84d' : '#39e6ff'));
+
+    const marker80X = trackX + SAFE_RATIO * trackW;
+    gel('grp-marker-80').setAttribute('x1', marker80X);
+    gel('grp-marker-80').setAttribute('x2', marker80X);
+  }
+
+  gRecalc();
+})();
+
+// ---- калькулятор «Гофра/труба» ----
+(function(){
+  const GOFRA = {
+    '16': 11.2, '20': 15, '25': 19, '32': 25, '40': 32, '50': 41, '63': 51
+  };
+
+  const pel  = id => document.getElementById(id);
+  const pfmt = (n, d=1) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+
+  function allowedRatio(n){
+    if (n <= 1) return 0.53;
+    if (n === 2) return 0.31;
+    return 0.40;
+  }
+
+  pel('pipe-size').addEventListener('change', ()=>{
+    pel('pipe-field-custom').style.display = pel('pipe-size').value === 'custom' ? '' : 'none';
+    pRecalc();
+  });
+  ['pipe-custom-diameter','pipe-cable-diameter','pipe-cable-count'].forEach(id=>{
+    pel(id).addEventListener('input', pRecalc);
+  });
+
+  function currentPipeInner(){
+    const sel = pel('pipe-size').value;
+    if (sel === 'custom') return parseFloat(pel('pipe-custom-diameter').value) || 0;
+    return GOFRA[sel] || 0;
+  }
+
+  function maxCablesFit(cableD, pipeInnerD){
+    if (cableD <= 0 || pipeInnerD <= 0) return 0;
+    const pipeArea = Math.PI * (pipeInnerD/2) ** 2;
+    const cableArea = Math.PI * (cableD/2) ** 2;
+    let maxN = 0;
+    for (let n = 1; n <= 200; n++){
+      const ratio = (n * cableArea) / pipeArea;
+      if (ratio <= allowedRatio(n)) maxN = n;
+    }
+    return maxN;
+  }
+
+  function cableWordNom(n){ // именительный: кабель / кабеля / кабелей
+    const n10 = n % 10, n100 = n % 100;
+    if (n10 === 1 && n100 !== 11) return 'кабель';
+    if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return 'кабеля';
+    return 'кабелей';
+  }
+  function cableWordGen(n){ // родительный после «для»: кабеля / кабелей
+    const n10 = n % 10, n100 = n % 100;
+    return (n10 === 1 && n100 !== 11) ? 'кабеля' : 'кабелей';
+  }
+  function cableVerb(n){ // затянется / затянутся
+    const n10 = n % 10, n100 = n % 100;
+    return (n10 === 1 && n100 !== 11) ? 'ется' : 'утся';
+  }
+
+  function pRecalc(){
+    const pipeInner = currentPipeInner();
+    const cableD = parseFloat(pel('pipe-cable-diameter').value) || 0;
+    const count = Math.max(1, Math.round(parseFloat(pel('pipe-cable-count').value) || 1));
+
+    const pipeArea = Math.PI * (pipeInner/2) ** 2;
+    const cableArea = Math.PI * (cableD/2) ** 2;
+    const fillRatio = pipeArea > 0 ? (count * cableArea) / pipeArea : 0;
+    const allowed = allowedRatio(count);
+    const fits = fillRatio <= allowed;
+    const maxN = maxCablesFit(cableD, pipeInner);
+
+    pel('pipe-stat-fill').textContent = pfmt(fillRatio*100,0) + ' %';
+    pel('pipe-stat-fill').classList.toggle('warn', !fits);
+    pel('pipe-stat-fill').classList.toggle('accent', fits);
+    pel('pipe-stat-allowed').textContent = pfmt(allowed*100,0) + ' %';
+    pel('pipe-stat-max').textContent = maxN + ' шт';
+    pel('pipe-stat-diam').textContent = pfmt(pipeInner,1) + ' мм';
+
+    let note;
+    if (fits){
+      note = 'В пределах нормы — ' + count + ' ' + cableWordNom(count) + ' диаметром ' + pfmt(cableD,1) + ' мм спокойно затян' + cableVerb(count) + ' в трубу ⌀' + pfmt(pipeInner,1) + ' мм.';
+    } else {
+      note = 'Не влезет: заполнение ' + pfmt(fillRatio*100,0) + '% превышает норму ' + pfmt(allowed*100,0) + '% для ' + count + ' ' + cableWordGen(count) + ' — возьмите трубу большего диаметра или уменьшите число кабелей (максимум для этой трубы — ' + maxN + ' шт).';
+    }
+    pel('pipe-note').textContent = note;
+    pel('pipe-note').classList.toggle('danger', !fits);
+
+    pel('pipe-txt-big').textContent = pfmt(fillRatio*100,0) + '% заполнения';
+    pel('pipe-txt-small').textContent = count + ' каб. × ⌀' + pfmt(cableD,1) + ' мм в трубе ⌀' + pfmt(pipeInner,1) + ' мм';
+    pel('pipe-txt-diam-value').textContent = pfmt(pipeInner,1) + ' мм';
+
+    const trackX = 170, trackW = 610;
+    const fillW = Math.max(0, Math.min(fillRatio, 1)) * trackW;
+    const fillEl = pel('pipe-fill');
+    fillEl.setAttribute('width', fillW.toFixed(1));
+    fillEl.setAttribute('fill', fits ? '#39e6ff' : '#e8827a');
+
+    const markerX = trackX + Math.min(allowed,1) * trackW;
+    pel('pipe-marker-allowed').setAttribute('x1', markerX.toFixed(1));
+    pel('pipe-marker-allowed').setAttribute('x2', markerX.toFixed(1));
+    pel('pipe-marker-label').setAttribute('x', markerX.toFixed(1));
+    pel('pipe-marker-label').textContent = pfmt(allowed*100,0) + '%';
+  }
+
+  pRecalc();
+})();
+
+// ---- калькулятор «Баланс фаз» ----
+(function(){
+  const phel  = id => document.getElementById(id);
+  const phfmt = (n, d=0) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const LOAD_IDS = ['ph-load-0','ph-load-1','ph-load-2','ph-load-3','ph-load-4','ph-load-5','ph-load-6','ph-load-7'];
+
+  LOAD_IDS.forEach(id => phel(id).addEventListener('input', phRecalc));
+
+  function phRecalc(){
+    const loads = LOAD_IDS
+      .map((id,i) => ({ name: 'Нагрузка ' + (i+1), watts: parseFloat(phel(id).value) || 0 }))
+      .filter(l => l.watts > 0);
+    loads.sort((a,b) => b.watts - a.watts); // сначала самые мощные (эвристика LPT)
+
+    const phases = [
+      { key:'a', name:'A', total:0, items:[] },
+      { key:'b', name:'B', total:0, items:[] },
+      { key:'c', name:'C', total:0, items:[] }
+    ];
+    loads.forEach(load => {
+      let target = phases[0];
+      for (const p of phases){ if (p.total < target.total) target = p; }
+      target.total += load.watts;
+      target.items.push(load);
+    });
+
+    const totals = phases.map(p => p.total);
+    const maxT = Math.max(...totals), minT = Math.min(...totals);
+    const avgT = totals.reduce((a,b)=>a+b,0) / 3;
+    const imbalancePct = avgT > 0 ? ((maxT - minT) / avgT * 100) : 0;
+    const warn = imbalancePct > 15;
+
+    phel('phase-stat-a').textContent = phfmt(phases[0].total) + ' Вт';
+    phel('phase-stat-b').textContent = phfmt(phases[1].total) + ' Вт';
+    phel('phase-stat-c').textContent = phfmt(phases[2].total) + ' Вт';
+    phel('phase-stat-imbalance').textContent = phfmt(imbalancePct,1) + ' %';
+    phel('phase-stat-imbalance').classList.toggle('warn', warn);
+    phel('phase-stat-imbalance').classList.toggle('accent', !warn);
+
+    phel('phase-txt-big').textContent = 'Перекос ' + phfmt(imbalancePct,1) + '%';
+    phel('phase-txt-small').textContent = 'мин ' + phfmt(minT) + ' Вт · макс ' + phfmt(maxT) + ' Вт · среднее ' + phfmt(avgT,0) + ' Вт';
+
+    const maxScale = Math.max(maxT, 1);
+    const baseY = 170, maxH = 110;
+    phases.forEach(p => {
+      const h = (p.total / maxScale) * maxH;
+      const bar = phel('phase-bar-' + p.key);
+      bar.setAttribute('height', h.toFixed(1));
+      bar.setAttribute('y', (baseY - h).toFixed(1));
+      const label = phel('phase-bar-' + p.key + '-label');
+      label.textContent = p.name + ' · ' + phfmt(p.total) + ' Вт';
+      label.setAttribute('y', Math.min(baseY - h - 10, 90).toFixed(1));
+
+      phel('phase-items-' + p.key).textContent = p.items.length
+        ? p.items.map(l => l.name + ' (' + phfmt(l.watts) + ' Вт)').join(', ')
+        : '—';
+      phel('phase-total-' + p.key).textContent = phfmt(p.total) + ' Вт';
+    });
+
+    let note;
+    if (loads.length === 0){
+      note = 'Добавьте хотя бы одну нагрузку (введите мощность больше нуля), чтобы увидеть распределение по фазам.';
+    } else if (warn){
+      note = 'Перекос ' + phfmt(imbalancePct,1) + '% выше рекомендуемого предела (~15%) — при сильном перекосе растёт ток в нулевом проводнике и может проседать напряжение на недогруженных фазах. Попробуйте разделить одну крупную нагрузку на части или перепроверьте вводные.';
+    } else {
+      note = 'Распределение сбалансировано — перекос в пределах разумного (~' + phfmt(imbalancePct,1) + '%).';
+    }
+    phel('phase-note').textContent = note;
+    phel('phase-note').classList.toggle('danger', warn);
+  }
+
+  phRecalc();
 })();
 </script>
 </body>
