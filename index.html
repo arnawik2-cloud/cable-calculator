@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Электрика — калькуляторы</title>
+<title id="page-title">Электрика — калькуляторы</title>
 <style>
   :root{
     --bg: #10141a;
@@ -35,6 +35,10 @@
   }
   .page{ max-width: 1180px; margin: 0 auto; padding: 56px 24px 40px; }
 
+  .top-row{
+    display:flex; align-items:center; justify-content:space-between;
+    flex-wrap:wrap; gap:12px; margin-bottom:22px;
+  }
   .badge{
     display:inline-flex; align-items:center; gap:8px;
     border:1px solid rgba(57,230,255,0.5);
@@ -44,8 +48,20 @@
     border-radius:999px;
     font-size:11px; font-weight:700;
     letter-spacing:.12em; text-transform:uppercase;
-    margin-bottom:22px;
     box-shadow: 0 0 18px rgba(57,230,255,0.12);
+  }
+  .lang-switcher{ display:flex; gap:4px; background: var(--input-bg); border:1px solid var(--input-border); border-radius:999px; padding:4px; box-shadow: inset 0 2px 5px rgba(0,0,0,0.4); }
+  .lang-btn{
+    border:none; background:transparent; cursor:pointer;
+    color: var(--text-dim); font-family:inherit; font-size:12px; font-weight:700;
+    padding:7px 13px; border-radius:999px; letter-spacing:.04em;
+    transition: all .15s ease;
+  }
+  .lang-btn:hover:not(.active){ color: var(--text); }
+  .lang-btn.active{
+    background: linear-gradient(160deg, var(--amber-strong), #12c9e0);
+    color: var(--amber-dark);
+    box-shadow: 0 0 12px rgba(57,230,255,0.5);
   }
   h1{
     font-size:44px; font-weight:800; letter-spacing:-0.02em;
@@ -268,18 +284,26 @@
 </head>
 <body>
 <div class="page">
-  <div class="badge">Работает локально · без API</div>
-  <h1>Электрика</h1>
-  <p class="subtitle">Набор расчётов для дома и объекта — сечение кабеля, подбор УЗО и автомата. Всё считается прямо в браузере, без интернета.</p>
+  <div class="top-row">
+    <div class="badge" data-i18n="common.badge">Работает локально · без API</div>
+    <div class="lang-switcher" id="lang-switcher">
+      <button class="lang-btn" data-lang="ru">RU</button>
+      <button class="lang-btn" data-lang="uk">UA</button>
+      <button class="lang-btn" data-lang="pl">PL</button>
+      <button class="lang-btn" data-lang="en">EN</button>
+    </div>
+  </div>
+  <h1 data-i18n="common.title">Электрика</h1>
+  <p class="subtitle" data-i18n="common.subtitle">Набор расчётов для дома и объекта — сечение кабеля, подбор УЗО и автомата. Всё считается прямо в браузере, без интернета.</p>
 
   <div class="main-tabs" id="main-tabs">
-    <button class="main-tab-btn active" data-tab="cable">Сечение кабеля</button>
-    <button class="main-tab-btn" data-tab="rcd">УЗО + автомат</button>
-    <button class="main-tab-btn" data-tab="led">БП для LED-ленты</button>
-    <button class="main-tab-btn" data-tab="lux">Освещённость</button>
-    <button class="main-tab-btn" data-tab="group">Розеточная группа</button>
-    <button class="main-tab-btn" data-tab="pipe">Гофра/труба</button>
-    <button class="main-tab-btn" data-tab="phase">Баланс фаз</button>
+    <button class="main-tab-btn active" data-tab="cable" data-i18n="tabs.cable">Сечение кабеля</button>
+    <button class="main-tab-btn" data-tab="rcd" data-i18n="tabs.rcd">УЗО + автомат</button>
+    <button class="main-tab-btn" data-tab="led" data-i18n="tabs.led">БП для LED-ленты</button>
+    <button class="main-tab-btn" data-tab="lux" data-i18n="tabs.lux">Освещённость</button>
+    <button class="main-tab-btn" data-tab="group" data-i18n="tabs.group">Розеточная группа</button>
+    <button class="main-tab-btn" data-tab="pipe" data-i18n="tabs.pipe">Гофра/труба</button>
+    <button class="main-tab-btn" data-tab="phase" data-i18n="tabs.phase">Баланс фаз</button>
   </div>
 
   <div class="tab-panel" id="tab-cable">
@@ -287,74 +311,74 @@
     <div class="col-left">
       <div class="card">
         <div class="field-group">
-          <label>Сеть</label>
+          <label data-i18n="cable.network">Сеть</label>
           <div class="toggle" id="toggle-network">
-            <button class="toggle-btn active" data-value="1">1~ 220 В</button>
-            <button class="toggle-btn" data-value="3">3~ 380 В</button>
+            <button class="toggle-btn active" data-value="1" data-i18n="common.net1">1~ 220 В</button>
+            <button class="toggle-btn" data-value="3" data-i18n="common.net3">3~ 380 В</button>
           </div>
         </div>
 
         <div class="field-group">
-          <label>Нагрузка задана</label>
+          <label data-i18n="cable.loadtype">Нагрузка задана</label>
           <div class="toggle" id="toggle-loadtype">
-            <button class="toggle-btn active" data-value="power">Мощностью</button>
-            <button class="toggle-btn" data-value="current">Током</button>
+            <button class="toggle-btn active" data-value="power" data-i18n="common.byPower">Мощностью</button>
+            <button class="toggle-btn" data-value="current" data-i18n="common.byCurrent">Током</button>
           </div>
         </div>
 
         <div class="field-group" id="field-power">
-          <label>Мощность, кВт</label>
+          <label data-i18n="cable.power">Мощность, кВт</label>
           <input type="number" id="power" value="5" step="0.1" min="0">
         </div>
 
         <div class="field-group" id="field-current" style="display:none">
-          <label>Ток нагрузки, А</label>
+          <label data-i18n="cable.currentLoad">Ток нагрузки, А</label>
           <input type="number" id="currentInput" value="26.7" step="0.1" min="0">
         </div>
 
         <div class="row-2">
           <div class="field-group">
-            <label>cos φ</label>
+            <label data-i18n="common.cosphi">cos φ</label>
             <input type="number" id="cosphi" value="0.85" step="0.01" min="0.1" max="1">
           </div>
           <div class="field-group" id="field-eta">
-            <label>КПД (η)</label>
+            <label data-i18n="cable.eta">КПД (η)</label>
             <input type="number" id="eta" value="0.9" step="0.01" min="0.1" max="1">
           </div>
         </div>
 
         <label class="checkbox-row" id="row-motor">
           <input type="checkbox" id="isMotor">
-          <span>Электродвигатель (учитывать КПД, cos φ)</span>
+          <span data-i18n="cable.motor">Электродвигатель (учитывать КПД, cos φ)</span>
         </label>
       </div>
 
       <div class="card">
         <div class="field-group">
-          <label>Материал жил</label>
+          <label data-i18n="cable.material">Материал жил</label>
           <div class="toggle" id="toggle-material">
-            <button class="toggle-btn active" data-value="cu">Медь</button>
-            <button class="toggle-btn" data-value="al">Алюминий</button>
+            <button class="toggle-btn active" data-value="cu" data-i18n="common.copper">Медь</button>
+            <button class="toggle-btn" data-value="al" data-i18n="common.aluminium">Алюминий</button>
           </div>
         </div>
 
         <div class="field-group">
-          <label>Способ прокладки</label>
+          <label data-i18n="cable.method">Способ прокладки</label>
           <select id="method">
-            <option value="air" selected>Открыто, по воздуху</option>
-            <option value="conduit">В трубе, в стене</option>
-            <option value="tray">На лотке, пучком</option>
-            <option value="ground">В земле</option>
+            <option value="air" selected data-i18n="cable.methodAir">Открыто, по воздуху</option>
+            <option value="conduit" data-i18n="cable.methodConduit">В трубе, в стене</option>
+            <option value="tray" data-i18n="cable.methodTray">На лотке, пучком</option>
+            <option value="ground" data-i18n="cable.methodGround">В земле</option>
           </select>
         </div>
 
         <div class="row-2">
           <div class="field-group">
-            <label>Длина линии, м</label>
+            <label data-i18n="cable.length">Длина линии, м</label>
             <input type="number" id="length" value="70" step="1" min="0">
           </div>
           <div class="field-group">
-            <label>Доп. потеря U, %</label>
+            <label data-i18n="common.maxDrop">Доп. потеря U, %</label>
             <input type="number" id="maxDrop" value="5" step="0.1" min="0.1">
           </div>
         </div>
@@ -433,32 +457,32 @@
         </svg>
       </div>
 
-      <div class="warning-banner" id="warning-banner">
+      <div class="warning-banner" id="warning-banner" data-i18n="cable.warnBanner">
         Даже при максимальном стандартном сечении (240 мм²) допустимая потеря напряжения превышена. Проверьте длину линии или доп. потерю U, либо доверьте расчёт специалисту.
       </div>
 
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Расчётный ток</div>
+          <div class="stat-label" data-i18n="cable.statCurrent">Расчётный ток</div>
           <div class="stat-value" id="stat-current">— А</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Сечение жилы</div>
+          <div class="stat-label" data-i18n="cable.statSection">Сечение жилы</div>
           <div class="stat-value"><span class="dot" id="material-dot"></span><span id="stat-section">— мм²</span></div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Потеря напряжения</div>
+          <div class="stat-label" data-i18n="cable.statDrop">Потеря напряжения</div>
           <div class="stat-value accent" id="stat-drop">— %</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Автомат</div>
+          <div class="stat-label" data-i18n="cable.statBreaker">Автомат</div>
           <div class="stat-value green" id="stat-breaker">— А</div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="disclaimer">Расчёт ориентировочный: сечение подобрано по типовым таблицам длительно допустимых токов (аналог таблиц ПУЭ гл. 1.3) для стандартных условий прокладки, без поправочных коэффициентов на температуру и число рядом проложенных кабелей. Потеря напряжения — по упрощённой формуле без учёта реактивного сопротивления. Для проектной документации используйте актуальные нормативы и расчёт квалифицированного специалиста.</p>
+  <p class="disclaimer" data-i18n="cable.disclaimer">Расчёт ориентировочный: сечение подобрано по типовым таблицам длительно допустимых токов (аналог таблиц ПУЭ гл. 1.3) для стандартных условий прокладки, без поправочных коэффициентов на температуру и число рядом проложенных кабелей. Потеря напряжения — по упрощённой формуле без учёта реактивного сопротивления. Для проектной документации используйте актуальные нормативы и расчёт квалифицированного специалиста.</p>
   </div>
 
   <div class="tab-panel" id="tab-rcd" style="display:none">
@@ -466,45 +490,45 @@
     <div class="col-left">
       <div class="card">
         <div class="field-group">
-          <label>Тип линии</label>
+          <label data-i18n="rcd.linetype">Тип линии</label>
           <select id="rcd-linetype">
-            <option value="sockets_dry" selected>Розетки (сухие помещения)</option>
-            <option value="wet">Розетки / техника у воды (ванная, кухня)</option>
-            <option value="stationary">Мощная стационарная техника (плита, водонагреватель)</option>
-            <option value="lighting">Освещение</option>
-            <option value="main">Ввод на весь дом/квартиру (противопожарное)</option>
-            <option value="outdoor">Улица / баня / гараж</option>
+            <option value="sockets_dry" selected data-i18n="rcd.optSocketsDry">Розетки (сухие помещения)</option>
+            <option value="wet" data-i18n="rcd.optWet">Розетки / техника у воды (ванная, кухня)</option>
+            <option value="stationary" data-i18n="rcd.optStationary">Мощная стационарная техника (плита, водонагреватель)</option>
+            <option value="lighting" data-i18n="rcd.optLighting">Освещение</option>
+            <option value="main" data-i18n="rcd.optMain">Ввод на весь дом/квартиру (противопожарное)</option>
+            <option value="outdoor" data-i18n="rcd.optOutdoor">Улица / баня / гараж</option>
           </select>
         </div>
 
         <div class="field-group">
-          <label>Сеть</label>
+          <label data-i18n="cable.network">Сеть</label>
           <div class="toggle" id="rcd-toggle-network">
-            <button class="toggle-btn active" data-value="1">1~ 220 В</button>
-            <button class="toggle-btn" data-value="3">3~ 380 В</button>
+            <button class="toggle-btn active" data-value="1" data-i18n="common.net1">1~ 220 В</button>
+            <button class="toggle-btn" data-value="3" data-i18n="common.net3">3~ 380 В</button>
           </div>
         </div>
 
         <div class="field-group">
-          <label>Нагрузка задана</label>
+          <label data-i18n="cable.loadtype">Нагрузка задана</label>
           <div class="toggle" id="rcd-toggle-loadtype">
-            <button class="toggle-btn active" data-value="power">Мощностью</button>
-            <button class="toggle-btn" data-value="current">Током</button>
+            <button class="toggle-btn active" data-value="power" data-i18n="common.byPower">Мощностью</button>
+            <button class="toggle-btn" data-value="current" data-i18n="common.byCurrent">Током</button>
           </div>
         </div>
 
         <div class="field-group" id="rcd-field-power">
-          <label>Мощность линии, кВт</label>
+          <label data-i18n="rcd.power">Мощность линии, кВт</label>
           <input type="number" id="rcd-power" value="3.5" step="0.1" min="0">
         </div>
 
         <div class="field-group" id="rcd-field-current" style="display:none">
-          <label>Ток линии, А</label>
+          <label data-i18n="rcd.currentLoad">Ток линии, А</label>
           <input type="number" id="rcd-current" value="16" step="0.1" min="0">
         </div>
 
         <div class="field-group">
-          <label>cos φ</label>
+          <label data-i18n="common.cosphi">cos φ</label>
           <input type="number" id="rcd-cosphi" value="1" step="0.01" min="0.1" max="1">
         </div>
       </div>
@@ -579,26 +603,26 @@
 
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Расчётный ток</div>
+          <div class="stat-label" data-i18n="cable.statCurrent">Расчётный ток</div>
           <div class="stat-value" id="rcd-stat-current">— А</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Автомат</div>
+          <div class="stat-label" data-i18n="cable.statBreaker">Автомат</div>
           <div class="stat-value green" id="rcd-stat-breaker">— А</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">УЗО, номинал</div>
+          <div class="stat-label" data-i18n="rcd.statRcd">УЗО, номинал</div>
           <div class="stat-value accent" id="rcd-stat-rcd">— А</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Чувствительность</div>
+          <div class="stat-label" data-i18n="rcd.statMa">Чувствительность</div>
           <div class="stat-value" id="rcd-stat-ma">— мА</div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="disclaimer">Расчёт ориентировочный: номинал УЗО подобран по правилу «УЗО ≥ автомата по току» из стандартного ряда, чувствительность — по типовому назначению линии (аналог ПУЭ / ГОСТ Р 50571.3). Не учитывает избирательность (селективность) между несколькими УЗО, фактический ток утечки линии, тип УЗО (АС/А/В) и особые требования проекта. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
+  <p class="disclaimer" data-i18n="rcd.disclaimer">Расчёт ориентировочный: номинал УЗО подобран по правилу «УЗО ≥ автомата по току» из стандартного ряда, чувствительность — по типовому назначению линии (аналог ПУЭ / ГОСТ Р 50571.3). Не учитывает избирательность (селективность) между несколькими УЗО, фактический ток утечки линии, тип УЗО (АС/А/В) и особые требования проекта. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
   </div>
 
   <div class="tab-panel" id="tab-led" style="display:none">
@@ -606,18 +630,18 @@
     <div class="col-left">
       <div class="card">
         <div class="field-group">
-          <label>Длина ленты, м</label>
+          <label data-i18n="led.length">Длина ленты, м</label>
           <input type="number" id="led-length" value="5" step="0.1" min="0">
         </div>
 
         <div class="field-group">
-          <label>Мощность, Вт/м</label>
+          <label data-i18n="led.wpm">Мощность, Вт/м</label>
           <input type="number" id="led-wpm" value="14.4" step="0.1" min="0">
-          <div class="field-hint">Типовые значения: 4,8 / 9,6 / 14,4 / 19,2 / 24 Вт/м — зависит от плотности светодиодов</div>
+          <div class="field-hint" data-i18n="led.wpmHint">Типовые значения: 4,8 / 9,6 / 14,4 / 19,2 / 24 Вт/м — зависит от плотности светодиодов</div>
         </div>
 
         <div class="field-group">
-          <label>Напряжение ленты</label>
+          <label data-i18n="led.voltage">Напряжение ленты</label>
           <div class="toggle" id="led-toggle-voltage">
             <button class="toggle-btn active" data-value="12">12 В</button>
             <button class="toggle-btn" data-value="24">24 В</button>
@@ -625,7 +649,7 @@
         </div>
 
         <div class="field-group">
-          <label>Запас мощности БП</label>
+          <label data-i18n="led.margin">Запас мощности БП</label>
           <div class="toggle" id="led-toggle-margin">
             <button class="toggle-btn active" data-value="1.2">× 1,2</button>
             <button class="toggle-btn" data-value="1.3">× 1,3</button>
@@ -636,11 +660,11 @@
       <div class="card">
         <div class="row-2">
           <div class="field-group">
-            <label>Длина провода БП→лента, м</label>
+            <label data-i18n="led.wireLength">Длина провода БП→лента, м</label>
             <input type="number" id="led-wirelength" value="3" step="0.1" min="0">
           </div>
           <div class="field-group">
-            <label>Доп. потеря U, %</label>
+            <label data-i18n="common.maxDrop">Доп. потеря U, %</label>
             <input type="number" id="led-maxdrop" value="3" step="0.1" min="0.1">
           </div>
         </div>
@@ -701,7 +725,7 @@
           <circle cx="790" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
           <circle cx="805" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
           <circle cx="820" cy="120" r="3.2" fill="#39e6ff" filter="url(#neon3d3)"/>
-          <text x="782" y="150" text-anchor="middle" font-size="11" fill="#8b93a1">LED-лента</text>
+          <text x="782" y="150" text-anchor="middle" font-size="11" fill="#8b93a1" data-i18n="led.stripLabel">LED-лента</text>
         </svg>
       </div>
 
@@ -709,26 +733,26 @@
 
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Ток ленты</div>
+          <div class="stat-label" data-i18n="led.statCurrent">Ток ленты</div>
           <div class="stat-value" id="led-stat-current">— А</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Блок питания</div>
+          <div class="stat-label" data-i18n="led.statPsu">Блок питания</div>
           <div class="stat-value green" id="led-stat-psu">— Вт</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Сечение провода</div>
+          <div class="stat-label" data-i18n="led.statSection">Сечение провода</div>
           <div class="stat-value" id="led-stat-section">— мм²</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Потеря напряжения</div>
+          <div class="stat-label" data-i18n="cable.statDrop">Потеря напряжения</div>
           <div class="stat-value accent" id="led-stat-drop">— %</div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="disclaimer">Расчёт ориентировочный: мощность БП = длина × Вт/м × коэффициент запаса, округлена до ближайшего номинала из стандартного ряда. Сечение провода от БП до ленты подобрано по фактическому току ленты и допустимой потере напряжения (медь, без учёта падения напряжения внутри самой ленты — на длинных лентах оно тоже накапливается и снижает яркость к дальнему концу). Для проектной документации используйте расчёт квалифицированного специалиста.</p>
+  <p class="disclaimer" data-i18n="led.disclaimer">Расчёт ориентировочный: мощность БП = длина × Вт/м × коэффициент запаса, округлена до ближайшего номинала из стандартного ряда. Сечение провода от БП до ленты подобрано по фактическому току ленты и допустимой потере напряжения (медь, без учёта падения напряжения внутри самой ленты — на длинных лентах оно тоже накапливается и снижает яркость к дальнему концу). Для проектной документации используйте расчёт квалифицированного специалиста.</p>
   </div>
 
   <div class="tab-panel" id="tab-lux" style="display:none">
@@ -736,32 +760,32 @@
     <div class="col-left">
       <div class="card">
         <div class="field-group">
-          <label>Тип помещения</label>
+          <label data-i18n="lux.roomtype">Тип помещения</label>
           <select id="lux-roomtype">
-            <option value="living" selected>Гостиная / зал</option>
-            <option value="bedroom">Спальня</option>
-            <option value="kitchen">Кухня</option>
-            <option value="kids">Детская</option>
-            <option value="office">Кабинет / рабочее место</option>
-            <option value="bathroom">Ванная / санузел</option>
-            <option value="hallway">Прихожая / коридор</option>
-            <option value="garage">Мастерская / гараж</option>
+            <option value="living" selected data-i18n="lux.optLiving">Гостиная / зал</option>
+            <option value="bedroom" data-i18n="lux.optBedroom">Спальня</option>
+            <option value="kitchen" data-i18n="lux.optKitchen">Кухня</option>
+            <option value="kids" data-i18n="lux.optKids">Детская</option>
+            <option value="office" data-i18n="lux.optOffice">Кабинет / рабочее место</option>
+            <option value="bathroom" data-i18n="lux.optBathroom">Ванная / санузел</option>
+            <option value="hallway" data-i18n="lux.optHallway">Прихожая / коридор</option>
+            <option value="garage" data-i18n="lux.optGarage">Мастерская / гараж</option>
           </select>
         </div>
 
         <div class="row-2">
           <div class="field-group">
-            <label>Площадь, м²</label>
+            <label data-i18n="lux.area">Площадь, м²</label>
             <input type="number" id="lux-area" value="15" step="0.5" min="0">
           </div>
           <div class="field-group">
-            <label>Высота потолка, м</label>
+            <label data-i18n="lux.height">Высота потолка, м</label>
             <input type="number" id="lux-height" value="2.7" step="0.1" min="1.5">
           </div>
         </div>
 
         <div class="field-group">
-          <label>Запас на старение ламп</label>
+          <label data-i18n="lux.margin">Запас на старение ламп</label>
           <div class="toggle" id="lux-toggle-margin">
             <button class="toggle-btn" data-value="1.1">× 1,1</button>
             <button class="toggle-btn active" data-value="1.2">× 1,2</button>
@@ -772,9 +796,9 @@
 
       <div class="card">
         <div class="field-group">
-          <label>Световой поток одной лампы, лм</label>
+          <label data-i18n="lux.lampLumens">Световой поток одной лампы, лм</label>
           <input type="number" id="lux-lamplumens" value="800" step="10" min="1">
-          <div class="field-hint">Типовая LED-груша ~800–850 лм (≈60 Вт по старой шкале накаливания), потолочная панель 36 Вт ~3000 лм</div>
+          <div class="field-hint" data-i18n="lux.lampHint">Типовая LED-груша ~800–850 лм (≈60 Вт по старой шкале накаливания), потолочная панель 36 Вт ~3000 лм</div>
         </div>
       </div>
     </div>
@@ -840,26 +864,26 @@
 
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Нужный поток</div>
+          <div class="stat-label" data-i18n="lux.statLumens">Нужный поток</div>
           <div class="stat-value accent" id="lux-stat-lumens">— лм</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Норма освещённости</div>
+          <div class="stat-label" data-i18n="lux.statLux">Норма освещённости</div>
           <div class="stat-value" id="lux-stat-lux">— лк</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">≈ LED-мощность</div>
+          <div class="stat-label" data-i18n="lux.statWatts">≈ LED-мощность</div>
           <div class="stat-value green" id="lux-stat-watts">— Вт</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Кол-во ламп</div>
+          <div class="stat-label" data-i18n="lux.statCount">Кол-во ламп</div>
           <div class="stat-value" id="lux-stat-count">— шт</div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="disclaimer">Расчёт ориентировочный: нужный световой поток = норма освещённости (по типу помещения, аналог СП 52.13330) × площадь × поправка на высоту потолка × запас на старение ламп. Не учитывает коэффициент использования светового потока, отражающие свойства стен и потолка, расположение окон и цветовую температуру. Эквивалент в ваттах — из расчёта ~100 лм/Вт для современных LED-источников. Для точного проекта освещения используйте расчёт квалифицированного специалиста.</p>
+  <p class="disclaimer" data-i18n="lux.disclaimer">Расчёт ориентировочный: нужный световой поток = норма освещённости (по типу помещения, аналог СП 52.13330) × площадь × поправка на высоту потолка × запас на старение ламп. Не учитывает коэффициент использования светового потока, отражающие свойства стен и потолка, расположение окон и цветовую температуру. Эквивалент в ваттах — из расчёта ~100 лм/Вт для современных LED-источников. Для точного проекта освещения используйте расчёт квалифицированного специалиста.</p>
   </div>
 
   <div class="tab-panel" id="tab-group" style="display:none">
@@ -867,28 +891,28 @@
     <div class="col-left">
       <div class="card">
         <div class="field-group">
-          <label>Номинал автомата группы</label>
+          <label data-i18n="group.breaker">Номинал автомата группы</label>
           <div class="toggle" id="grp-toggle-breaker">
             <button class="toggle-btn" data-value="10">10 А</button>
             <button class="toggle-btn active" data-value="16">16 А</button>
             <button class="toggle-btn" data-value="20">20 А</button>
             <button class="toggle-btn" data-value="25">25 А</button>
           </div>
-          <div class="field-hint">Сеть 1~220 В — стандартная бытовая розеточная группа</div>
+          <div class="field-hint" data-i18n="group.breakerHint">Сеть 1~220 В — стандартная бытовая розеточная группа</div>
         </div>
       </div>
 
       <div class="card">
-        <div class="field-group"><label>Приборы в группе</label></div>
-        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="2000" checked><span>Чайник</span><b>2000 Вт</b></label>
-        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1000"><span>Микроволновка</span><b>1000 Вт</b></label>
-        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="850"><span>Тостер</span><b>850 Вт</b></label>
-        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1800"><span>Фен</span><b>1800 Вт</b></label>
-        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="2000"><span>Обогреватель</span><b>2000 Вт</b></label>
-        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1400"><span>Пылесос</span><b>1400 Вт</b></label>
+        <div class="field-group"><label data-i18n="group.appliances">Приборы в группе</label></div>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="2000" checked><span data-i18n="group.kettle">Чайник</span><b>2000 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1000"><span data-i18n="group.microwave">Микроволновка</span><b>1000 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="850"><span data-i18n="group.toaster">Тостер</span><b>850 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1800"><span data-i18n="group.hairdryer">Фен</span><b>1800 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="2000"><span data-i18n="group.heater">Обогреватель</span><b>2000 Вт</b></label>
+        <label class="appliance-row"><input type="checkbox" class="grp-appliance" data-watts="1400"><span data-i18n="group.vacuum">Пылесос</span><b>1400 Вт</b></label>
         <label class="appliance-row appliance-row-custom">
           <input type="checkbox" id="grp-custom-check">
-          <span>Свой прибор</span>
+          <span data-i18n="group.custom">Свой прибор</span>
           <input type="number" id="grp-custom-watts" value="500" min="0" step="10">
         </label>
       </div>
@@ -927,7 +951,7 @@
           <ellipse cx="85" cy="152" rx="46" ry="7" fill="#000" opacity="0.35" filter="url(#softShadow5)"/>
           <rect x="40" y="95" width="90" height="52" rx="10" fill="url(#bevelGrad5)" stroke="rgba(255,255,255,0.14)" filter="url(#neon3d5)"/>
           <rect x="42" y="97" width="86" height="14" rx="7" fill="rgba(255,255,255,0.05)"/>
-          <text x="85" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1">АВТОМАТ</text>
+          <text x="85" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1" data-i18n="common.breakerCaps">АВТОМАТ</text>
           <text id="grp-txt-breaker-value" x="85" y="136" text-anchor="middle" font-size="15" font-weight="800" fill="#39e6ff">16 А</text>
 
           <ellipse cx="475" cy="150" rx="310" ry="8" fill="#000" opacity="0.3" filter="url(#softShadow5)"/>
@@ -942,26 +966,26 @@
 
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Общая мощность</div>
+          <div class="stat-label" data-i18n="group.statTotal">Общая мощность</div>
           <div class="stat-value" id="grp-stat-total">— Вт</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Ток нагрузки</div>
+          <div class="stat-label" data-i18n="group.statCurrent">Ток нагрузки</div>
           <div class="stat-value" id="grp-stat-current">— А</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Автомат группы</div>
+          <div class="stat-label" data-i18n="group.statBreaker">Автомат группы</div>
           <div class="stat-value green" id="grp-stat-breaker">— А</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Запас до 80%</div>
+          <div class="stat-label" data-i18n="group.statRemaining">Запас до 80%</div>
           <div class="stat-value accent" id="grp-stat-remaining">— Вт</div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="disclaimer">Расчёт ориентировочный: располагаемая мощность = 220 В × номинал автомата. Рекомендуемый предел длительной нагрузки — 80% от этой величины (частая практика для защиты от перегрева при постоянной работе, а не только кратковременных пиков). Не учитывает одновременность включения на практике (коэффициент спроса), пусковые токи приборов с двигателем и реальный cos φ смешанной нагрузки. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
+  <p class="disclaimer" data-i18n="group.disclaimer">Расчёт ориентировочный: располагаемая мощность = 220 В × номинал автомата. Рекомендуемый предел длительной нагрузки — 80% от этой величины (частая практика для защиты от перегрева при постоянной работе, а не только кратковременных пиков). Не учитывает одновременность включения на практике (коэффициент спроса), пусковые токи приборов с двигателем и реальный cos φ смешанной нагрузки. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
   </div>
 
   <div class="tab-panel" id="tab-pipe" style="display:none">
@@ -969,20 +993,20 @@
     <div class="col-left">
       <div class="card">
         <div class="field-group">
-          <label>Труба / гофра</label>
+          <label data-i18n="pipe.size">Труба / гофра</label>
           <select id="pipe-size">
-            <option value="16">⌀16 мм (внутр. 11,2 мм)</option>
-            <option value="20">⌀20 мм (внутр. 15 мм)</option>
-            <option value="25">⌀25 мм (внутр. 19 мм)</option>
-            <option value="32" selected>⌀32 мм (внутр. 25 мм)</option>
-            <option value="40">⌀40 мм (внутр. 32 мм)</option>
-            <option value="50">⌀50 мм (внутр. 41 мм)</option>
-            <option value="63">⌀63 мм (внутр. 51 мм)</option>
-            <option value="custom">Свой внутренний диаметр…</option>
+            <option value="16" data-i18n="pipe.opt16">⌀16 мм (внутр. 11,2 мм)</option>
+            <option value="20" data-i18n="pipe.opt20">⌀20 мм (внутр. 15 мм)</option>
+            <option value="25" data-i18n="pipe.opt25">⌀25 мм (внутр. 19 мм)</option>
+            <option value="32" selected data-i18n="pipe.opt32">⌀32 мм (внутр. 25 мм)</option>
+            <option value="40" data-i18n="pipe.opt40">⌀40 мм (внутр. 32 мм)</option>
+            <option value="50" data-i18n="pipe.opt50">⌀50 мм (внутр. 41 мм)</option>
+            <option value="63" data-i18n="pipe.opt63">⌀63 мм (внутр. 51 мм)</option>
+            <option value="custom" data-i18n="pipe.optCustom">Свой внутренний диаметр…</option>
           </select>
         </div>
         <div class="field-group" id="pipe-field-custom" style="display:none">
-          <label>Внутренний диаметр трубы, мм</label>
+          <label data-i18n="pipe.customDiameter">Внутренний диаметр трубы, мм</label>
           <input type="number" id="pipe-custom-diameter" value="20" step="0.5" min="1">
         </div>
       </div>
@@ -990,15 +1014,15 @@
       <div class="card">
         <div class="row-2">
           <div class="field-group">
-            <label>Диаметр кабеля (по оболочке), мм</label>
+            <label data-i18n="pipe.cableDiameter">Диаметр кабеля (по оболочке), мм</label>
             <input type="number" id="pipe-cable-diameter" value="8" step="0.5" min="0.5">
           </div>
           <div class="field-group">
-            <label>Количество кабелей</label>
+            <label data-i18n="pipe.cableCount">Количество кабелей</label>
             <input type="number" id="pipe-cable-count" value="3" step="1" min="1">
           </div>
         </div>
-        <div class="field-hint">Диаметр кабеля обычно указан в его маркировке или на упаковке; для ВВГнг 3×2,5 — около 10–11 мм, для 3×1,5 — около 9 мм. Точнее — измерить штангенциркулем.</div>
+        <div class="field-hint" data-i18n="pipe.hint">Диаметр кабеля обычно указан в его маркировке или на упаковке; для ВВГнг 3×2,5 — около 10–11 мм, для 3×1,5 — около 9 мм. Точнее — измерить штангенциркулем.</div>
       </div>
     </div>
 
@@ -1035,7 +1059,7 @@
           <ellipse cx="85" cy="152" rx="46" ry="7" fill="#000" opacity="0.35" filter="url(#softShadow6)"/>
           <rect x="40" y="95" width="90" height="52" rx="10" fill="url(#bevelGrad6)" stroke="rgba(255,255,255,0.14)" filter="url(#neon3d6)"/>
           <rect x="42" y="97" width="86" height="14" rx="7" fill="rgba(255,255,255,0.05)"/>
-          <text x="85" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1">ТРУБА</text>
+          <text x="85" y="115" text-anchor="middle" font-size="10" font-weight="700" fill="#8b93a1" letter-spacing="1" data-i18n="pipe.pipeCaps">ТРУБА</text>
           <text id="pipe-txt-diam-value" x="85" y="136" text-anchor="middle" font-size="15" font-weight="800" fill="#39e6ff">15 мм</text>
 
           <ellipse cx="475" cy="150" rx="310" ry="8" fill="#000" opacity="0.3" filter="url(#softShadow6)"/>
@@ -1050,44 +1074,44 @@
 
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Заполнение трубы</div>
+          <div class="stat-label" data-i18n="pipe.statFill">Заполнение трубы</div>
           <div class="stat-value accent" id="pipe-stat-fill">— %</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Норма для N кабелей</div>
+          <div class="stat-label" data-i18n="pipe.statAllowed">Норма для N кабелей</div>
           <div class="stat-value green" id="pipe-stat-allowed">— %</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Влезет кабелей (макс)</div>
+          <div class="stat-label" data-i18n="pipe.statMax">Влезет кабелей (макс)</div>
           <div class="stat-value" id="pipe-stat-max">— шт</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Труба, внутр.</div>
+          <div class="stat-label" data-i18n="pipe.statDiam">Труба, внутр.</div>
           <div class="stat-value" id="pipe-stat-diam">— мм</div>
         </div>
       </div>
     </div>
   </div>
 
-  <p class="disclaimer">Расчёт ориентировочный: норма заполнения — общепринятое правило (аналог таблиц заполнения по NEC Chapter 9, широко используемое и в отечественной практике): 1 кабель — до 53% сечения трубы, 2 кабеля — до 31%, 3 и более — до 40%. Не учитывает реальную форму кабелей в сечении (не всегда круглая для многожильных), трудность затяжки на поворотах и длинных трассах, а также требования конкретного проекта. Диаметр кабеля нужно уточнять по факту — оболочки одного сечения жил у разных производителей отличаются.</p>
+  <p class="disclaimer" data-i18n="pipe.disclaimer">Расчёт ориентировочный: норма заполнения — общепринятое правило (аналог таблиц заполнения по NEC Chapter 9, широко используемое и в отечественной практике): 1 кабель — до 53% сечения трубы, 2 кабеля — до 31%, 3 и более — до 40%. Не учитывает реальную форму кабелей в сечении (не всегда круглая для многожильных), трудность затяжки на поворотах и длинных трассах, а также требования конкретного проекта. Диаметр кабеля нужно уточнять по факту — оболочки одного сечения жил у разных производителей отличаются.</p>
   </div>
 
   <div class="tab-panel" id="tab-phase" style="display:none">
   <div class="grid">
     <div class="col-left">
       <div class="card">
-        <div class="field-group"><label>Нагрузки, Вт (0 — не используется)</label></div>
+        <div class="field-group"><label data-i18n="phase.loads">Нагрузки, Вт (0 — не используется)</label></div>
         <div class="phase-inputs-grid">
-          <div class="phase-input-row"><span>Нагрузка 1</span><input type="number" id="ph-load-0" value="2000" step="50" min="0"></div>
-          <div class="phase-input-row"><span>Нагрузка 2</span><input type="number" id="ph-load-1" value="1500" step="50" min="0"></div>
-          <div class="phase-input-row"><span>Нагрузка 3</span><input type="number" id="ph-load-2" value="3500" step="50" min="0"></div>
-          <div class="phase-input-row"><span>Нагрузка 4</span><input type="number" id="ph-load-3" value="1000" step="50" min="0"></div>
-          <div class="phase-input-row"><span>Нагрузка 5</span><input type="number" id="ph-load-4" value="2500" step="50" min="0"></div>
-          <div class="phase-input-row"><span>Нагрузка 6</span><input type="number" id="ph-load-5" value="800" step="50" min="0"></div>
-          <div class="phase-input-row"><span>Нагрузка 7</span><input type="number" id="ph-load-6" value="0" step="50" min="0"></div>
-          <div class="phase-input-row"><span>Нагрузка 8</span><input type="number" id="ph-load-7" value="0" step="50" min="0"></div>
+          <div class="phase-input-row"><span data-i18n="phase.load1">Нагрузка 1</span><input type="number" id="ph-load-0" value="2000" step="50" min="0"></div>
+          <div class="phase-input-row"><span data-i18n="phase.load2">Нагрузка 2</span><input type="number" id="ph-load-1" value="1500" step="50" min="0"></div>
+          <div class="phase-input-row"><span data-i18n="phase.load3">Нагрузка 3</span><input type="number" id="ph-load-2" value="3500" step="50" min="0"></div>
+          <div class="phase-input-row"><span data-i18n="phase.load4">Нагрузка 4</span><input type="number" id="ph-load-3" value="1000" step="50" min="0"></div>
+          <div class="phase-input-row"><span data-i18n="phase.load5">Нагрузка 5</span><input type="number" id="ph-load-4" value="2500" step="50" min="0"></div>
+          <div class="phase-input-row"><span data-i18n="phase.load6">Нагрузка 6</span><input type="number" id="ph-load-5" value="800" step="50" min="0"></div>
+          <div class="phase-input-row"><span data-i18n="phase.load7">Нагрузка 7</span><input type="number" id="ph-load-6" value="0" step="50" min="0"></div>
+          <div class="phase-input-row"><span data-i18n="phase.load8">Нагрузка 8</span><input type="number" id="ph-load-7" value="0" step="50" min="0"></div>
         </div>
-        <div class="field-hint">Например: группы розеток, освещение, водонагреватель, тёплый пол — каждая однофазная линия отдельной строкой</div>
+        <div class="field-hint" data-i18n="phase.hint">Например: группы розеток, освещение, водонагреватель, тёплый пол — каждая однофазная линия отдельной строкой</div>
       </div>
     </div>
 
@@ -1121,17 +1145,17 @@
           <ellipse cx="250" cy="176" rx="55" ry="7" fill="#000" opacity="0.3" filter="url(#softShadow7)"/>
           <text id="phase-bar-a-label" x="250" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#39e6ff">A · 0 Вт</text>
           <rect id="phase-bar-a" x="190" y="170" width="120" height="0" rx="8" fill="#39e6ff" filter="url(#neon3d7)"/>
-          <text x="250" y="186" text-anchor="middle" font-size="10" fill="#8b93a1">ФАЗА A</text>
+          <text x="250" y="186" text-anchor="middle" font-size="10" fill="#8b93a1" data-i18n="phase.phaseACaps">ФАЗА A</text>
 
           <ellipse cx="430" cy="176" rx="55" ry="7" fill="#000" opacity="0.3" filter="url(#softShadow7)"/>
           <text id="phase-bar-b-label" x="430" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#39e6ff">B · 0 Вт</text>
           <rect id="phase-bar-b" x="370" y="170" width="120" height="0" rx="8" fill="#39e6ff" filter="url(#neon3d7)"/>
-          <text x="430" y="186" text-anchor="middle" font-size="10" fill="#8b93a1">ФАЗА B</text>
+          <text x="430" y="186" text-anchor="middle" font-size="10" fill="#8b93a1" data-i18n="phase.phaseBCaps">ФАЗА B</text>
 
           <ellipse cx="610" cy="176" rx="55" ry="7" fill="#000" opacity="0.3" filter="url(#softShadow7)"/>
           <text id="phase-bar-c-label" x="610" y="78" text-anchor="middle" font-size="13" font-weight="700" fill="#39e6ff">C · 0 Вт</text>
           <rect id="phase-bar-c" x="550" y="170" width="120" height="0" rx="8" fill="#39e6ff" filter="url(#neon3d7)"/>
-          <text x="610" y="186" text-anchor="middle" font-size="10" fill="#8b93a1">ФАЗА C</text>
+          <text x="610" y="186" text-anchor="middle" font-size="10" fill="#8b93a1" data-i18n="phase.phaseCCaps">ФАЗА C</text>
         </svg>
       </div>
 
@@ -1139,36 +1163,36 @@
 
       <div class="stats-row">
         <div class="stat-card">
-          <div class="stat-label">Фаза A</div>
+          <div class="stat-label" data-i18n="phase.phaseA">Фаза A</div>
           <div class="stat-value" id="phase-stat-a">— Вт</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Фаза B</div>
+          <div class="stat-label" data-i18n="phase.phaseB">Фаза B</div>
           <div class="stat-value" id="phase-stat-b">— Вт</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Фаза C</div>
+          <div class="stat-label" data-i18n="phase.phaseC">Фаза C</div>
           <div class="stat-value" id="phase-stat-c">— Вт</div>
         </div>
         <div class="stat-card">
-          <div class="stat-label">Перекос</div>
+          <div class="stat-label" data-i18n="phase.statImbalance">Перекос</div>
           <div class="stat-value accent" id="phase-stat-imbalance">— %</div>
         </div>
       </div>
 
       <div class="phase-columns">
         <div class="phase-col">
-          <div class="phase-col-header">Фаза A</div>
+          <div class="phase-col-header" data-i18n="phase.phaseA">Фаза A</div>
           <div class="phase-col-items" id="phase-items-a">—</div>
           <div class="phase-col-total" id="phase-total-a">0 Вт</div>
         </div>
         <div class="phase-col">
-          <div class="phase-col-header">Фаза B</div>
+          <div class="phase-col-header" data-i18n="phase.phaseB">Фаза B</div>
           <div class="phase-col-items" id="phase-items-b">—</div>
           <div class="phase-col-total" id="phase-total-b">0 Вт</div>
         </div>
         <div class="phase-col">
-          <div class="phase-col-header">Фаза C</div>
+          <div class="phase-col-header" data-i18n="phase.phaseC">Фаза C</div>
           <div class="phase-col-items" id="phase-items-c">—</div>
           <div class="phase-col-total" id="phase-total-c">0 Вт</div>
         </div>
@@ -1176,11 +1200,797 @@
     </div>
   </div>
 
-  <p class="disclaimer">Расчёт ориентировочный: нагрузки распределяются жадным алгоритмом — каждая следующая (начиная с самой мощной) уходит на фазу с наименьшей текущей загрузкой. Это даёт результат, очень близкий к оптимальному, но не гарантирует математический идеал в каждом случае. Не учитывает реальную одновременность включения нагрузок, пусковые токи и то, что часть групп физически удобнее развести иначе (например, по расположению в щите). Перекос считается как (макс − мин) / среднее; ориентир — не более ~15%. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
+  <p class="disclaimer" data-i18n="phase.disclaimer">Расчёт ориентировочный: нагрузки распределяются жадным алгоритмом — каждая следующая (начиная с самой мощной) уходит на фазу с наименьшей текущей загрузкой. Это даёт результат, очень близкий к оптимальному, но не гарантирует математический идеал в каждом случае. Не учитывает реальную одновременность включения нагрузок, пусковые токи и то, что часть групп физически удобнее развести иначе (например, по расположению в щите). Перекос считается как (макс − мин) / среднее; ориентир — не более ~15%. Для проектной документации используйте расчёт квалифицированного специалиста.</p>
   </div>
 </div>
 
 <script>
+const I18N = {
+  "ru": {
+    "common.badge": "Работает локально · без API",
+    "common.title": "Электрика",
+    "common.subtitle": "Набор расчётов для дома и объекта — сечение кабеля, подбор УЗО и автомата. Всё считается прямо в браузере, без интернета.",
+    "common.net1": "1~ 220 В",
+    "common.net3": "3~ 380 В",
+    "common.byPower": "Мощностью",
+    "common.byCurrent": "Током",
+    "common.cosphi": "cos φ",
+    "common.maxDrop": "Доп. потеря U, %",
+    "common.copper": "Медь",
+    "common.aluminium": "Алюминий",
+    "common.breakerCaps": "АВТОМАТ",
+    "tabs.cable": "Сечение кабеля",
+    "tabs.rcd": "УЗО + автомат",
+    "tabs.led": "БП для LED-ленты",
+    "tabs.lux": "Освещённость",
+    "tabs.group": "Розеточная группа",
+    "tabs.pipe": "Гофра/труба",
+    "tabs.phase": "Баланс фаз",
+    "cable.network": "Сеть",
+    "cable.loadtype": "Нагрузка задана",
+    "cable.power": "Мощность, кВт",
+    "cable.currentLoad": "Ток нагрузки, А",
+    "cable.eta": "КПД (η)",
+    "cable.motor": "Электродвигатель (учитывать КПД, cos φ)",
+    "cable.material": "Материал жил",
+    "cable.method": "Способ прокладки",
+    "cable.methodAir": "Открыто, по воздуху",
+    "cable.methodConduit": "В трубе, в стене",
+    "cable.methodTray": "На лотке, пучком",
+    "cable.methodGround": "В земле",
+    "cable.length": "Длина линии, м",
+    "cable.statCurrent": "Расчётный ток",
+    "cable.statSection": "Сечение жилы",
+    "cable.statDrop": "Потеря напряжения",
+    "cable.statBreaker": "Автомат",
+    "cable.warnBanner": "Даже при максимальном стандартном сечении (240 мм²) допустимая потеря напряжения превышена. Проверьте длину линии или доп. потерю U, либо доверьте расчёт специалисту.",
+    "cable.disclaimer": "Расчёт ориентировочный: сечение подобрано по типовым таблицам длительно допустимых токов (аналог таблиц ПУЭ гл. 1.3) для стандартных условий прокладки, без поправочных коэффициентов на температуру и число рядом проложенных кабелей. Потеря напряжения — по упрощённой формуле без учёта реактивного сопротивления. Для проектной документации используйте актуальные нормативы и расчёт квалифицированного специалиста.",
+    "rcd.linetype": "Тип линии",
+    "rcd.optSocketsDry": "Розетки (сухие помещения)",
+    "rcd.optWet": "Розетки / техника у воды (ванная, кухня)",
+    "rcd.optStationary": "Мощная стационарная техника (плита, водонагреватель)",
+    "rcd.optLighting": "Освещение",
+    "rcd.optMain": "Ввод на весь дом/квартиру (противопожарное)",
+    "rcd.optOutdoor": "Улица / баня / гараж",
+    "rcd.power": "Мощность линии, кВт",
+    "rcd.currentLoad": "Ток линии, А",
+    "rcd.statRcd": "УЗО, номинал",
+    "rcd.statMa": "Чувствительность",
+    "rcd.disclaimer": "Расчёт ориентировочный: номинал УЗО подобран по правилу «УЗО ≥ автомата по току» из стандартного ряда, чувствительность — по типовому назначению линии (аналог ПУЭ / ГОСТ Р 50571.3). Не учитывает избирательность (селективность) между несколькими УЗО, фактический ток утечки линии, тип УЗО (АС/А/В) и особые требования проекта. Для проектной документации используйте расчёт квалифицированного специалиста.",
+    "led.length": "Длина ленты, м",
+    "led.wpm": "Мощность, Вт/м",
+    "led.wpmHint": "Типовые значения: 4,8 / 9,6 / 14,4 / 19,2 / 24 Вт/м — зависит от плотности светодиодов",
+    "led.voltage": "Напряжение ленты",
+    "led.margin": "Запас мощности БП",
+    "led.wireLength": "Длина провода БП→лента, м",
+    "led.stripLabel": "LED-лента",
+    "led.statCurrent": "Ток ленты",
+    "led.statPsu": "Блок питания",
+    "led.statSection": "Сечение провода",
+    "led.disclaimer": "Расчёт ориентировочный: мощность БП = длина × Вт/м × коэффициент запаса, округлена до ближайшего номинала из стандартного ряда. Сечение провода от БП до ленты подобрано по фактическому току ленты и допустимой потере напряжения (медь, без учёта падения напряжения внутри самой ленты — на длинных лентах оно тоже накапливается и снижает яркость к дальнему концу). Для проектной документации используйте расчёт квалифицированного специалиста.",
+    "lux.roomtype": "Тип помещения",
+    "lux.optLiving": "Гостиная / зал",
+    "lux.optBedroom": "Спальня",
+    "lux.optKitchen": "Кухня",
+    "lux.optKids": "Детская",
+    "lux.optOffice": "Кабинет / рабочее место",
+    "lux.optBathroom": "Ванная / санузел",
+    "lux.optHallway": "Прихожая / коридор",
+    "lux.optGarage": "Мастерская / гараж",
+    "lux.area": "Площадь, м²",
+    "lux.height": "Высота потолка, м",
+    "lux.margin": "Запас на старение ламп",
+    "lux.lampLumens": "Световой поток одной лампы, лм",
+    "lux.lampHint": "Типовая LED-груша ~800–850 лм (≈60 Вт по старой шкале накаливания), потолочная панель 36 Вт ~3000 лм",
+    "lux.statLumens": "Нужный поток",
+    "lux.statLux": "Норма освещённости",
+    "lux.statWatts": "≈ LED-мощность",
+    "lux.statCount": "Кол-во ламп",
+    "lux.disclaimer": "Расчёт ориентировочный: нужный световой поток = норма освещённости (по типу помещения, аналог СП 52.13330) × площадь × поправка на высоту потолка × запас на старение ламп. Не учитывает коэффициент использования светового потока, отражающие свойства стен и потолка, расположение окон и цветовую температуру. Эквивалент в ваттах — из расчёта ~100 лм/Вт для современных LED-источников. Для точного проекта освещения используйте расчёт квалифицированного специалиста.",
+    "group.breaker": "Номинал автомата группы",
+    "group.breakerHint": "Сеть 1~220 В — стандартная бытовая розеточная группа",
+    "group.appliances": "Приборы в группе",
+    "group.kettle": "Чайник",
+    "group.microwave": "Микроволновка",
+    "group.toaster": "Тостер",
+    "group.hairdryer": "Фен",
+    "group.heater": "Обогреватель",
+    "group.vacuum": "Пылесос",
+    "group.custom": "Свой прибор",
+    "group.statTotal": "Общая мощность",
+    "group.statCurrent": "Ток нагрузки",
+    "group.statBreaker": "Автомат группы",
+    "group.statRemaining": "Запас до 80%",
+    "group.disclaimer": "Расчёт ориентировочный: располагаемая мощность = 220 В × номинал автомата. Рекомендуемый предел длительной нагрузки — 80% от этой величины (частая практика для защиты от перегрева при постоянной работе, а не только кратковременных пиков). Не учитывает одновременность включения на практике (коэффициент спроса), пусковые токи приборов с двигателем и реальный cos φ смешанной нагрузки. Для проектной документации используйте расчёт квалифицированного специалиста.",
+    "pipe.size": "Труба / гофра",
+    "pipe.opt16": "⌀16 мм (внутр. 11,2 мм)",
+    "pipe.opt20": "⌀20 мм (внутр. 15 мм)",
+    "pipe.opt25": "⌀25 мм (внутр. 19 мм)",
+    "pipe.opt32": "⌀32 мм (внутр. 25 мм)",
+    "pipe.opt40": "⌀40 мм (внутр. 32 мм)",
+    "pipe.opt50": "⌀50 мм (внутр. 41 мм)",
+    "pipe.opt63": "⌀63 мм (внутр. 51 мм)",
+    "pipe.optCustom": "Свой внутренний диаметр…",
+    "pipe.pipeCaps": "ТРУБА",
+    "pipe.customDiameter": "Внутренний диаметр трубы, мм",
+    "pipe.cableDiameter": "Диаметр кабеля (по оболочке), мм",
+    "pipe.cableCount": "Количество кабелей",
+    "pipe.hint": "Диаметр кабеля обычно указан в его маркировке или на упаковке; для ВВГнг 3×2,5 — около 10–11 мм, для 3×1,5 — около 9 мм. Точнее — измерить штангенциркулем.",
+    "pipe.statFill": "Заполнение трубы",
+    "pipe.statAllowed": "Норма для N кабелей",
+    "pipe.statMax": "Влезет кабелей (макс)",
+    "pipe.statDiam": "Труба, внутр.",
+    "pipe.disclaimer": "Расчёт ориентировочный: норма заполнения — общепринятое правило (аналог таблиц заполнения по NEC Chapter 9, широко используемое и в отечественной практике): 1 кабель — до 53% сечения трубы, 2 кабеля — до 31%, 3 и более — до 40%. Не учитывает реальную форму кабелей в сечении (не всегда круглая для многожильных), трудность затяжки на поворотах и длинных трассах, а также требования конкретного проекта. Диаметр кабеля нужно уточнять по факту — оболочки одного сечения жил у разных производителей отличаются.",
+    "phase.loads": "Нагрузки, Вт (0 — не используется)",
+    "phase.load1": "Нагрузка 1",
+    "phase.load2": "Нагрузка 2",
+    "phase.load3": "Нагрузка 3",
+    "phase.load4": "Нагрузка 4",
+    "phase.load5": "Нагрузка 5",
+    "phase.load6": "Нагрузка 6",
+    "phase.load7": "Нагрузка 7",
+    "phase.load8": "Нагрузка 8",
+    "phase.hint": "Например: группы розеток, освещение, водонагреватель, тёплый пол — каждая однофазная линия отдельной строкой",
+    "phase.phaseACaps": "ФАЗА A",
+    "phase.phaseBCaps": "ФАЗА B",
+    "phase.phaseCCaps": "ФАЗА C",
+    "phase.phaseA": "Фаза A",
+    "phase.phaseB": "Фаза B",
+    "phase.phaseC": "Фаза C",
+    "phase.statImbalance": "Перекос",
+    "phase.disclaimer": "Расчёт ориентировочный: нагрузки распределяются жадным алгоритмом — каждая следующая (начиная с самой мощной) уходит на фазу с наименьшей текущей загрузкой. Это даёт результат, очень близкий к оптимальному, но не гарантирует математический идеал в каждом случае. Не учитывает реальную одновременность включения нагрузок, пусковые токи и то, что часть групп физически удобнее развести иначе (например, по расположению в щите). Перекос считается как (макс − мин) / среднее; ориентир — не более ~15%. Для проектной документации используйте расчёт квалифицированного специалиста.",
+    "common.titleSuffix": "калькуляторы",
+    "dyn.copperLower": "медь",
+    "dyn.aluminiumLower": "алюминий",
+    "dyn.net1compact": "1~220В",
+    "dyn.net3compact": "3~380В",
+    "dyn.avPrefix": "АВ",
+    "dyn.rcdPrefix": "УЗО",
+    "dyn.sensitivity": "чувствительность",
+    "dyn.stripPrefix": "БП",
+    "dyn.fillSuffix": "заполнения",
+    "dyn.imbalancePrefix": "Перекос",
+    "dyn.minWord": "мин",
+    "dyn.maxWord": "макс",
+    "dyn.avgWord": "среднее",
+    "dyn.freeWord": "свободно",
+    "dyn.overloadWord": "перегрузка на",
+    "dyn.outOfWord": "из",
+    "rcd.note.sockets_dry": "Стандартная защита розеточных групп в сухих жилых комнатах — 30 мА.",
+    "rcd.note.wet": "Повышенная чувствительность обязательна во влажных зонах: ванная, кухня у мойки, бассейн.",
+    "rcd.note.stationary": "Для плиты и водонагревателя обычно достаточно 30 мА; если техника стоит в санузле — используйте 10 мА.",
+    "rcd.note.lighting": "По ПУЭ для чисто осветительных групп УЗО не обязательно, но не будет лишним для дополнительной защиты.",
+    "rcd.note.main": "Это противопожарное УЗО на вводе — оно не заменяет групповые 10/30 мА, а дополняет их. Для селективности вводное УЗО должно быть минимум втрое менее чувствительным, чем групповые (100 мА при групповых 30 мА).",
+    "rcd.note.outdoor": "В особо сырых помещениях (баня, погреб, улица под дождём) рассмотрите 10 мА."
+  },
+  "uk": {
+    "common.badge": "Працює локально · без API",
+    "common.title": "Електрика",
+    "common.subtitle": "Набір розрахунків для дому та об'єкта — переріз кабелю, підбір ПЗВ та автомата. Усе рахується прямо в браузері, без інтернету.",
+    "common.net1": "1~ 220 В",
+    "common.net3": "3~ 380 В",
+    "common.byPower": "Потужністю",
+    "common.byCurrent": "Струмом",
+    "common.cosphi": "cos φ",
+    "common.maxDrop": "Доп. втрата U, %",
+    "common.copper": "Мідь",
+    "common.aluminium": "Алюміній",
+    "common.breakerCaps": "АВТОМАТ",
+    "tabs.cable": "Переріз кабелю",
+    "tabs.rcd": "ПЗВ + автомат",
+    "tabs.led": "БЖ для LED-стрічки",
+    "tabs.lux": "Освітленість",
+    "tabs.group": "Розеткова група",
+    "tabs.pipe": "Гофра/труба",
+    "tabs.phase": "Баланс фаз",
+    "cable.network": "Мережа",
+    "cable.loadtype": "Навантаження задано",
+    "cable.power": "Потужність, кВт",
+    "cable.currentLoad": "Струм навантаження, А",
+    "cable.eta": "ККД (η)",
+    "cable.motor": "Електродвигун (враховувати ККД, cos φ)",
+    "cable.material": "Матеріал жил",
+    "cable.method": "Спосіб прокладання",
+    "cable.methodAir": "Відкрито, повітрям",
+    "cable.methodConduit": "У трубі, в стіні",
+    "cable.methodTray": "На лотку, пучком",
+    "cable.methodGround": "У землі",
+    "cable.length": "Довжина лінії, м",
+    "cable.statCurrent": "Розрахунковий струм",
+    "cable.statSection": "Переріз жили",
+    "cable.statDrop": "Втрата напруги",
+    "cable.statBreaker": "Автомат",
+    "cable.warnBanner": "Навіть при максимальному стандартному перерізі (240 мм²) допустима втрата напруги перевищена. Перевірте довжину лінії або доп. втрату U, або довірте розрахунок фахівцю.",
+    "cable.disclaimer": "Розрахунок орієнтовний: переріз підібрано за типовими таблицями тривало допустимих струмів (аналог таблиць ПУЕ гл. 1.3) для стандартних умов прокладання, без поправочних коефіцієнтів на температуру та кількість поруч прокладених кабелів. Втрата напруги — за спрощеною формулою без урахування реактивного опору. Для проектної документації використовуйте чинні нормативи та розрахунок кваліфікованого фахівця.",
+    "rcd.linetype": "Тип лінії",
+    "rcd.optSocketsDry": "Розетки (сухі приміщення)",
+    "rcd.optWet": "Розетки / техніка біля води (ванна, кухня)",
+    "rcd.optStationary": "Потужна стаціонарна техніка (плита, водонагрівач)",
+    "rcd.optLighting": "Освітлення",
+    "rcd.optMain": "Ввід на весь будинок/квартиру (протипожежне)",
+    "rcd.optOutdoor": "Вулиця / лазня / гараж",
+    "rcd.power": "Потужність лінії, кВт",
+    "rcd.currentLoad": "Струм лінії, А",
+    "rcd.statRcd": "ПЗВ, номінал",
+    "rcd.statMa": "Чутливість",
+    "rcd.disclaimer": "Розрахунок орієнтовний: номінал ПЗВ підібрано за правилом «ПЗВ ≥ автомата за струмом» зі стандартного ряду, чутливість — за типовим призначенням лінії (аналог ПУЕ / ГОСТ Р 50571.3). Не враховує вибірковість (селективність) між кількома ПЗВ, фактичний струм витоку лінії, тип ПЗВ (AC/A/B) та особливі вимоги проєкту. Для проектної документації використовуйте розрахунок кваліфікованого фахівця.",
+    "led.length": "Довжина стрічки, м",
+    "led.wpm": "Потужність, Вт/м",
+    "led.wpmHint": "Типові значення: 4,8 / 9,6 / 14,4 / 19,2 / 24 Вт/м — залежить від щільності світлодіодів",
+    "led.voltage": "Напруга стрічки",
+    "led.margin": "Запас потужності БЖ",
+    "led.wireLength": "Довжина проводу БЖ→стрічка, м",
+    "led.stripLabel": "LED-стрічка",
+    "led.statCurrent": "Струм стрічки",
+    "led.statPsu": "Блок живлення",
+    "led.statSection": "Переріз проводу",
+    "led.disclaimer": "Розрахунок орієнтовний: потужність БЖ = довжина × Вт/м × коефіцієнт запасу, округлена до найближчого номіналу зі стандартного ряду. Переріз проводу від БЖ до стрічки підібрано за фактичним струмом стрічки та допустимою втратою напруги (мідь, без урахування падіння напруги всередині самої стрічки — на довгих стрічках воно теж накопичується і знижує яскравість до дальнього кінця). Для проектної документації використовуйте розрахунок кваліфікованого фахівця.",
+    "lux.roomtype": "Тип приміщення",
+    "lux.optLiving": "Вітальня / зал",
+    "lux.optBedroom": "Спальня",
+    "lux.optKitchen": "Кухня",
+    "lux.optKids": "Дитяча",
+    "lux.optOffice": "Кабінет / робоче місце",
+    "lux.optBathroom": "Ванна / санвузол",
+    "lux.optHallway": "Передпокій / коридор",
+    "lux.optGarage": "Майстерня / гараж",
+    "lux.area": "Площа, м²",
+    "lux.height": "Висота стелі, м",
+    "lux.margin": "Запас на старіння ламп",
+    "lux.lampLumens": "Світловий потік однієї лампи, лм",
+    "lux.lampHint": "Типова LED-груша ~800–850 лм (≈60 Вт за старою шкалою розжарювання), стельова панель 36 Вт ~3000 лм",
+    "lux.statLumens": "Потрібний потік",
+    "lux.statLux": "Норма освітленості",
+    "lux.statWatts": "≈ LED-потужність",
+    "lux.statCount": "К-сть ламп",
+    "lux.disclaimer": "Розрахунок орієнтовний: потрібний світловий потік = норма освітленості (за типом приміщення, аналог СП 52.13330) × площа × поправка на висоту стелі × запас на старіння ламп. Не враховує коефіцієнт використання світлового потоку, відбивні властивості стін і стелі, розташування вікон та колірну температуру. Еквівалент у ватах — з розрахунку ~100 лм/Вт для сучасних LED-джерел. Для точного проєкту освітлення використовуйте розрахунок кваліфікованого фахівця.",
+    "group.breaker": "Номінал автомата групи",
+    "group.breakerHint": "Мережа 1~220 В — стандартна побутова розеткова група",
+    "group.appliances": "Прилади в групі",
+    "group.kettle": "Чайник",
+    "group.microwave": "Мікрохвильовка",
+    "group.toaster": "Тостер",
+    "group.hairdryer": "Фен",
+    "group.heater": "Обігрівач",
+    "group.vacuum": "Пилосос",
+    "group.custom": "Свій прилад",
+    "group.statTotal": "Загальна потужність",
+    "group.statCurrent": "Струм навантаження",
+    "group.statBreaker": "Автомат групи",
+    "group.statRemaining": "Запас до 80%",
+    "group.disclaimer": "Розрахунок орієнтовний: доступна потужність = 220 В × номінал автомата. Рекомендована межа тривалого навантаження — 80% від цієї величини (поширена практика захисту від перегріву при постійній роботі, а не лише короткочасних піків). Не враховує реальну одночасність увімкнення (коефіцієнт попиту), пускові струми приладів з двигуном і реальний cos φ змішаного навантаження. Для проектної документації використовуйте розрахунок кваліфікованого фахівця.",
+    "pipe.size": "Труба / гофра",
+    "pipe.opt16": "⌀16 мм (внутр. 11,2 мм)",
+    "pipe.opt20": "⌀20 мм (внутр. 15 мм)",
+    "pipe.opt25": "⌀25 мм (внутр. 19 мм)",
+    "pipe.opt32": "⌀32 мм (внутр. 25 мм)",
+    "pipe.opt40": "⌀40 мм (внутр. 32 мм)",
+    "pipe.opt50": "⌀50 мм (внутр. 41 мм)",
+    "pipe.opt63": "⌀63 мм (внутр. 51 мм)",
+    "pipe.optCustom": "Свій внутрішній діаметр…",
+    "pipe.pipeCaps": "ТРУБА",
+    "pipe.customDiameter": "Внутрішній діаметр труби, мм",
+    "pipe.cableDiameter": "Діаметр кабелю (по оболонці), мм",
+    "pipe.cableCount": "Кількість кабелів",
+    "pipe.hint": "Діаметр кабелю зазвичай вказаний у його маркуванні або на упаковці; для ВВГнг 3×2,5 — близько 10–11 мм, для 3×1,5 — близько 9 мм. Точніше — виміряти штангенциркулем.",
+    "pipe.statFill": "Заповнення труби",
+    "pipe.statAllowed": "Норма для N кабелів",
+    "pipe.statMax": "Влізе кабелів (макс)",
+    "pipe.statDiam": "Труба, внутр.",
+    "pipe.disclaimer": "Розрахунок орієнтовний: норма заповнення — загальноприйняте правило (аналог таблиць заповнення за NEC Chapter 9, широко застосовуване й у вітчизняній практиці): 1 кабель — до 53% перерізу труби, 2 кабелі — до 31%, 3 і більше — до 40%. Не враховує реальну форму кабелів у перерізі (не завжди кругла для багатожильних), складність затягування на поворотах і довгих трасах, а також вимоги конкретного проєкту. Діаметр кабелю потрібно уточнювати за фактом — оболонки одного перерізу жил у різних виробників відрізняються.",
+    "phase.loads": "Навантаження, Вт (0 — не використовується)",
+    "phase.load1": "Навантаження 1",
+    "phase.load2": "Навантаження 2",
+    "phase.load3": "Навантаження 3",
+    "phase.load4": "Навантаження 4",
+    "phase.load5": "Навантаження 5",
+    "phase.load6": "Навантаження 6",
+    "phase.load7": "Навантаження 7",
+    "phase.load8": "Навантаження 8",
+    "phase.hint": "Наприклад: групи розеток, освітлення, водонагрівач, тепла підлога — кожна однофазна лінія окремим рядком",
+    "phase.phaseACaps": "ФАЗА A",
+    "phase.phaseBCaps": "ФАЗА B",
+    "phase.phaseCCaps": "ФАЗА C",
+    "phase.phaseA": "Фаза A",
+    "phase.phaseB": "Фаза B",
+    "phase.phaseC": "Фаза C",
+    "phase.statImbalance": "Перекіс",
+    "phase.disclaimer": "Розрахунок орієнтовний: навантаження розподіляються жадібним алгоритмом — кожне наступне (починаючи з найпотужнішого) йде на фазу з найменшим поточним навантаженням. Це дає результат, дуже близький до оптимального, але не гарантує математичного ідеалу в кожному випадку. Не враховує реальну одночасність увімкнення навантажень, пускові струми і те, що частину груп фізично зручніше розвести інакше (наприклад, за розташуванням у щиті). Перекіс рахується як (макс − мін) / середнє; орієнтир — не більше ~15%. Для проектної документації використовуйте розрахунок кваліфікованого фахівця.",
+    "common.titleSuffix": "калькулятори",
+    "dyn.copperLower": "мідь",
+    "dyn.aluminiumLower": "алюміній",
+    "dyn.net1compact": "1~220В",
+    "dyn.net3compact": "3~380В",
+    "dyn.avPrefix": "АВ",
+    "dyn.rcdPrefix": "ПЗВ",
+    "dyn.sensitivity": "чутливість",
+    "dyn.stripPrefix": "БЖ",
+    "dyn.fillSuffix": "заповнення",
+    "dyn.imbalancePrefix": "Перекіс",
+    "dyn.minWord": "мін",
+    "dyn.maxWord": "макс",
+    "dyn.avgWord": "середнє",
+    "dyn.freeWord": "вільно",
+    "dyn.overloadWord": "перевантаження на",
+    "dyn.outOfWord": "з",
+    "rcd.note.sockets_dry": "Стандартний захист розеткових груп у сухих житлових кімнатах — 30 мА.",
+    "rcd.note.wet": "Підвищена чутливість обов’язкова у вологих зонах: ванна, кухня біля мийки, басейн.",
+    "rcd.note.stationary": "Для плити та водонагрівача зазвичай достатньо 30 мА; якщо техніка стоїть у санвузлі — використовуйте 10 мА.",
+    "rcd.note.lighting": "За ПУЕ для суто освітлювальних груп ПЗВ не обов’язкове, але не завадить для додаткового захисту.",
+    "rcd.note.main": "Це протипожежне ПЗВ на вводі — воно не замінює групові 10/30 мА, а доповнює їх. Для селективності вступне ПЗВ має бути щонайменше втричі менш чутливим, ніж групові (100 мА при групових 30 мА).",
+    "rcd.note.outdoor": "В особливо вологих приміщеннях (лазня, льох, вулиця під дощем) розгляньте 10 мА."
+  },
+  "pl": {
+    "common.badge": "Działa lokalnie · bez API",
+    "common.title": "Elektryka",
+    "common.subtitle": "Zestaw obliczeń dla domu i obiektu — przekrój kabla, dobór wyłącznika różnicowoprądowego i nadprądowego. Wszystko liczone od razu w przeglądarce, bez internetu.",
+    "common.net1": "1~ 220 V",
+    "common.net3": "3~ 380 V",
+    "common.byPower": "Mocą",
+    "common.byCurrent": "Prądem",
+    "common.cosphi": "cos φ",
+    "common.maxDrop": "Dop. spadek U, %",
+    "common.copper": "Miedź",
+    "common.aluminium": "Aluminium",
+    "common.breakerCaps": "WYŁĄCZNIK",
+    "tabs.cable": "Przekrój kabla",
+    "tabs.rcd": "RCD + wyłącznik",
+    "tabs.led": "Zasilacz do taśmy LED",
+    "tabs.lux": "Oświetlenie",
+    "tabs.group": "Obwód gniazd",
+    "tabs.pipe": "Rurka/peszel",
+    "tabs.phase": "Bilans faz",
+    "cable.network": "Sieć",
+    "cable.loadtype": "Obciążenie podane",
+    "cable.power": "Moc, kW",
+    "cable.currentLoad": "Prąd obciążenia, A",
+    "cable.eta": "Sprawność (η)",
+    "cable.motor": "Silnik elektryczny (uwzględniać sprawność, cos φ)",
+    "cable.material": "Materiał żył",
+    "cable.method": "Sposób ułożenia",
+    "cable.methodAir": "Otwarcie, w powietrzu",
+    "cable.methodConduit": "W rurze, w ścianie",
+    "cable.methodTray": "Na korytku, w wiązce",
+    "cable.methodGround": "W ziemi",
+    "cable.length": "Długość linii, m",
+    "cable.statCurrent": "Prąd obliczeniowy",
+    "cable.statSection": "Przekrój żyły",
+    "cable.statDrop": "Spadek napięcia",
+    "cable.statBreaker": "Wyłącznik",
+    "cable.warnBanner": "Nawet przy maksymalnym standardowym przekroju (240 mm²) dopuszczalny spadek napięcia jest przekroczony. Sprawdź długość linii lub dop. spadek U, albo powierz obliczenia specjaliście.",
+    "cable.disclaimer": "Obliczenie orientacyjne: przekrój dobrano wg typowych tabel długotrwale dopuszczalnych prądów (odpowiednik tabel PUE rozdz. 1.3) dla standardowych warunków ułożenia, bez współczynników korekcyjnych na temperaturę i liczbę sąsiednich kabli. Spadek napięcia — wg uproszczonego wzoru bez uwzględnienia reaktancji. Do dokumentacji projektowej używaj aktualnych norm i obliczeń wykwalifikowanego specjalisty.",
+    "rcd.linetype": "Typ linii",
+    "rcd.optSocketsDry": "Gniazdka (pomieszczenia suche)",
+    "rcd.optWet": "Gniazdka / urządzenia przy wodzie (łazienka, kuchnia)",
+    "rcd.optStationary": "Duże urządzenia stacjonarne (kuchenka, podgrzewacz wody)",
+    "rcd.optLighting": "Oświetlenie",
+    "rcd.optMain": "Wprowadzenie na cały dom/mieszkanie (przeciwpożarowe)",
+    "rcd.optOutdoor": "Zewnątrz / sauna / garaż",
+    "rcd.power": "Moc linii, kW",
+    "rcd.currentLoad": "Prąd linii, A",
+    "rcd.statRcd": "RCD, wartość znam.",
+    "rcd.statMa": "Czułość",
+    "rcd.disclaimer": "Obliczenie orientacyjne: wartość znamionową RCD dobrano wg zasady „RCD ≥ prąd wyłącznika” z szeregu standardowego, czułość — wg typowego przeznaczenia linii (odpowiednik PUE / GOST R 50571.3). Nie uwzględnia selektywności między kilkoma RCD, rzeczywistego prądu upływu linii, typu RCD (AC/A/B) ani szczególnych wymagań projektu. Do dokumentacji projektowej użyj obliczeń wykwalifikowanego specjalisty.",
+    "led.length": "Długość taśmy, m",
+    "led.wpm": "Moc, W/m",
+    "led.wpmHint": "Typowe wartości: 4,8 / 9,6 / 14,4 / 19,2 / 24 W/m — zależy od gęstości diod LED",
+    "led.voltage": "Napięcie taśmy",
+    "led.margin": "Zapas mocy zasilacza",
+    "led.wireLength": "Długość przewodu zasilacz→taśma, m",
+    "led.stripLabel": "Taśma LED",
+    "led.statCurrent": "Prąd taśmy",
+    "led.statPsu": "Zasilacz",
+    "led.statSection": "Przekrój przewodu",
+    "led.disclaimer": "Obliczenie orientacyjne: moc zasilacza = długość × W/m × współczynnik zapasu, zaokrąglona do najbliższej wartości ze standardowego szeregu. Przekrój przewodu od zasilacza do taśmy dobrano wg rzeczywistego prądu taśmy i dopuszczalnego spadku napięcia (miedź, bez uwzględnienia spadku napięcia wewnątrz samej taśmy — na długich taśmach on również się kumuluje i obniża jasność na dalekim końcu). Do dokumentacji projektowej użyj obliczeń wykwalifikowanego specjalisty.",
+    "lux.roomtype": "Typ pomieszczenia",
+    "lux.optLiving": "Salon",
+    "lux.optBedroom": "Sypialnia",
+    "lux.optKitchen": "Kuchnia",
+    "lux.optKids": "Pokój dziecięcy",
+    "lux.optOffice": "Gabinet / stanowisko pracy",
+    "lux.optBathroom": "Łazienka / WC",
+    "lux.optHallway": "Przedpokój / korytarz",
+    "lux.optGarage": "Warsztat / garaż",
+    "lux.area": "Powierzchnia, m²",
+    "lux.height": "Wysokość sufitu, m",
+    "lux.margin": "Zapas na starzenie się lamp",
+    "lux.lampLumens": "Strumień świetlny jednej lampy, lm",
+    "lux.lampHint": "Typowa żarówka LED ~800–850 lm (≈60 W wg starej skali żarowej), panel sufitowy 36 W ~3000 lm",
+    "lux.statLumens": "Wymagany strumień",
+    "lux.statLux": "Norma oświetlenia",
+    "lux.statWatts": "≈ moc LED",
+    "lux.statCount": "Liczba lamp",
+    "lux.disclaimer": "Obliczenie orientacyjne: wymagany strumień świetlny = norma oświetlenia (wg typu pomieszczenia, odpowiednik SP 52.13330) × powierzchnia × poprawka na wysokość sufitu × zapas na starzenie się lamp. Nie uwzględnia współczynnika wykorzystania strumienia świetlnego, właściwości odblaskowych ścian i sufitu, rozmieszczenia okien i temperatury barwowej. Odpowiednik w watach — przy ~100 lm/W dla współczesnych źródeł LED. Do precyzyjnego projektu oświetlenia użyj obliczeń wykwalifikowanego specjalisty.",
+    "group.breaker": "Wartość znam. wyłącznika obwodu",
+    "group.breakerHint": "Sieć 1~220 V — standardowy domowy obwód gniazd",
+    "group.appliances": "Urządzenia w obwodzie",
+    "group.kettle": "Czajnik",
+    "group.microwave": "Kuchenka mikrofalowa",
+    "group.toaster": "Toster",
+    "group.hairdryer": "Suszarka do włosów",
+    "group.heater": "Grzejnik",
+    "group.vacuum": "Odkurzacz",
+    "group.custom": "Własne urządzenie",
+    "group.statTotal": "Moc całkowita",
+    "group.statCurrent": "Prąd obciążenia",
+    "group.statBreaker": "Wyłącznik obwodu",
+    "group.statRemaining": "Zapas do 80%",
+    "group.disclaimer": "Obliczenie orientacyjne: dostępna moc = 220 V × wartość znamionowa wyłącznika. Zalecany limit obciążenia długotrwałego — 80% tej wartości (częsta praktyka ochrony przed przegrzaniem przy pracy ciągłej, a nie tylko krótkotrwałych szczytach). Nie uwzględnia rzeczywistej jednoczesności włączenia (współczynnik zapotrzebowania), prądów rozruchowych urządzeń z silnikiem i rzeczywistego cos φ obciążenia mieszanego. Do dokumentacji projektowej użyj obliczeń wykwalifikowanego specjalisty.",
+    "pipe.size": "Rurka / peszel",
+    "pipe.opt16": "⌀16 mm (wewn. 11,2 mm)",
+    "pipe.opt20": "⌀20 mm (wewn. 15 mm)",
+    "pipe.opt25": "⌀25 mm (wewn. 19 mm)",
+    "pipe.opt32": "⌀32 mm (wewn. 25 mm)",
+    "pipe.opt40": "⌀40 mm (wewn. 32 mm)",
+    "pipe.opt50": "⌀50 mm (wewn. 41 mm)",
+    "pipe.opt63": "⌀63 mm (wewn. 51 mm)",
+    "pipe.optCustom": "Własna średnica wewnętrzna…",
+    "pipe.pipeCaps": "RURA",
+    "pipe.customDiameter": "Średnica wewnętrzna rury, mm",
+    "pipe.cableDiameter": "Średnica kabla (po izolacji), mm",
+    "pipe.cableCount": "Liczba kabli",
+    "pipe.hint": "Średnica kabla zwykle podana jest w jego oznaczeniu lub na opakowaniu; dla kabla 3×2,5 mm² to ok. 10–11 mm, dla 3×1,5 mm² ok. 9 mm. Dokładniej — zmierz suwmiarką.",
+    "pipe.statFill": "Wypełnienie rury",
+    "pipe.statAllowed": "Norma dla N kabli",
+    "pipe.statMax": "Zmieści się kabli (maks)",
+    "pipe.statDiam": "Rura, wewn.",
+    "pipe.disclaimer": "Obliczenie orientacyjne: norma wypełnienia to powszechnie przyjęta zasada (odpowiednik tabel wypełnienia wg NEC Chapter 9, szeroko stosowana też lokalnie): 1 kabel — do 53% przekroju rury, 2 kable — do 31%, 3 i więcej — do 40%. Nie uwzględnia rzeczywistego kształtu kabli w przekroju (nie zawsze okrągły dla wielożyłowych), trudności wciągania na zakrętach i długich trasach oraz wymagań konkretnego projektu. Średnicę kabla należy sprawdzić faktycznie — osłony tego samego przekroju żył różnią się u różnych producentów.",
+    "phase.loads": "Obciążenia, W (0 — nieużywane)",
+    "phase.load1": "Obciążenie 1",
+    "phase.load2": "Obciążenie 2",
+    "phase.load3": "Obciążenie 3",
+    "phase.load4": "Obciążenie 4",
+    "phase.load5": "Obciążenie 5",
+    "phase.load6": "Obciążenie 6",
+    "phase.load7": "Obciążenie 7",
+    "phase.load8": "Obciążenie 8",
+    "phase.hint": "Na przykład: obwody gniazd, oświetlenie, podgrzewacz wody, ogrzewanie podłogowe — każda linia jednofazowa w osobnym wierszu",
+    "phase.phaseACaps": "FAZA A",
+    "phase.phaseBCaps": "FAZA B",
+    "phase.phaseCCaps": "FAZA C",
+    "phase.phaseA": "Faza A",
+    "phase.phaseB": "Faza B",
+    "phase.phaseC": "Faza C",
+    "phase.statImbalance": "Niesymetria",
+    "phase.disclaimer": "Obliczenie orientacyjne: obciążenia rozdzielane są algorytmem zachłannym — każde kolejne (zaczynając od najmocniejszego) trafia na fazę z najmniejszym bieżącym obciążeniem. Daje to wynik bardzo bliski optymalnemu, ale nie gwarantuje matematycznego ideału w każdym przypadku. Nie uwzględnia rzeczywistej jednoczesności włączenia obciążeń, prądów rozruchowych ani tego, że część obwodów wygodniej fizycznie rozprowadzić inaczej (np. wg rozmieszczenia w rozdzielnicy). Niesymetria liczona jako (maks − min) / średnia; orientacyjnie nie więcej niż ~15%. Do dokumentacji projektowej użyj obliczeń wykwalifikowanego specjalisty.",
+    "common.titleSuffix": "kalkulatory",
+    "dyn.copperLower": "miedź",
+    "dyn.aluminiumLower": "aluminium",
+    "dyn.net1compact": "1~220V",
+    "dyn.net3compact": "3~380V",
+    "dyn.avPrefix": "WYŁ",
+    "dyn.rcdPrefix": "RCD",
+    "dyn.sensitivity": "czułość",
+    "dyn.stripPrefix": "Zasilacz",
+    "dyn.fillSuffix": "wypełnienia",
+    "dyn.imbalancePrefix": "Niesymetria",
+    "dyn.minWord": "min",
+    "dyn.maxWord": "maks",
+    "dyn.avgWord": "średnia",
+    "dyn.freeWord": "wolne",
+    "dyn.overloadWord": "przeciążenie o",
+    "dyn.outOfWord": "z",
+    "rcd.note.sockets_dry": "Standardowa ochrona obwodów gniazd w suchych pomieszczeniach mieszkalnych — 30 mA.",
+    "rcd.note.wet": "Podwyższona czułość jest obowiązkowa w strefach wilgotnych: łazienka, kuchnia przy zlewie, basen.",
+    "rcd.note.stationary": "Dla kuchenki i podgrzewacza wody zwykle wystarcza 30 mA; jeśli urządzenie stoi w łazience — użyj 10 mA.",
+    "rcd.note.lighting": "Wg PUE dla czysto oświetleniowych obwodów RCD nie jest obowiązkowe, ale nie zaszkodzi dla dodatkowej ochrony.",
+    "rcd.note.main": "To przeciwpożarowy RCD na wejściu — nie zastępuje on obwodowych 10/30 mA, tylko je uzupełnia. Dla selektywności RCD główny powinien być co najmniej trzykrotnie mniej czuły niż obwodowe (100 mA przy obwodowych 30 mA).",
+    "rcd.note.outdoor": "W szczególnie wilgotnych miejscach (sauna, piwnica, na zewnątrz w deszczu) rozważ 10 mA."
+  },
+  "en": {
+    "common.badge": "Runs locally · no API",
+    "common.title": "Electrics",
+    "common.subtitle": "A set of calculators for home and site work — cable sizing, RCD and breaker selection. Everything runs right in the browser, no internet needed.",
+    "common.net1": "1~ 220 V",
+    "common.net3": "3~ 380 V",
+    "common.byPower": "By power",
+    "common.byCurrent": "By current",
+    "common.cosphi": "cos φ",
+    "common.maxDrop": "Max voltage drop, %",
+    "common.copper": "Copper",
+    "common.aluminium": "Aluminium",
+    "common.breakerCaps": "BREAKER",
+    "tabs.cable": "Cable sizing",
+    "tabs.rcd": "RCD + breaker",
+    "tabs.led": "LED strip PSU",
+    "tabs.lux": "Illuminance",
+    "tabs.group": "Outlet circuit",
+    "tabs.pipe": "Conduit fill",
+    "tabs.phase": "Phase balance",
+    "cable.network": "Network",
+    "cable.loadtype": "Load given",
+    "cable.power": "Power, kW",
+    "cable.currentLoad": "Load current, A",
+    "cable.eta": "Efficiency (η)",
+    "cable.motor": "Electric motor (factor in efficiency, cos φ)",
+    "cable.material": "Conductor material",
+    "cable.method": "Installation method",
+    "cable.methodAir": "Open air",
+    "cable.methodConduit": "In conduit, in wall",
+    "cable.methodTray": "On tray, bundled",
+    "cable.methodGround": "Underground",
+    "cable.length": "Line length, m",
+    "cable.statCurrent": "Calculated current",
+    "cable.statSection": "Conductor size",
+    "cable.statDrop": "Voltage drop",
+    "cable.statBreaker": "Breaker",
+    "cable.warnBanner": "Even at the maximum standard cross-section (240 mm²) the allowed voltage drop is exceeded. Check the line length or the max-drop setting, or have a specialist do the calculation.",
+    "cable.disclaimer": "This is an approximate calculation: the cross-section is chosen from typical continuous-current tables (similar to PUE ch. 1.3) for standard installation conditions, without correction factors for temperature or the number of nearby cables. Voltage drop uses a simplified formula that ignores reactance. For design documentation, use current standards and a qualified specialist's calculation.",
+    "rcd.linetype": "Line type",
+    "rcd.optSocketsDry": "Sockets (dry rooms)",
+    "rcd.optWet": "Sockets / appliances near water (bathroom, kitchen)",
+    "rcd.optStationary": "High-power fixed appliances (stove, water heater)",
+    "rcd.optLighting": "Lighting",
+    "rcd.optMain": "Main incomer for whole house/flat (fire protection)",
+    "rcd.optOutdoor": "Outdoors / sauna / garage",
+    "rcd.power": "Line power, kW",
+    "rcd.currentLoad": "Line current, A",
+    "rcd.statRcd": "RCD rating",
+    "rcd.statMa": "Sensitivity",
+    "rcd.disclaimer": "This is an approximate calculation: the RCD rating follows the rule 'RCD ≥ breaker current' from the standard series; sensitivity follows the typical purpose of the line (similar to PUE / GOST R 50571.3). It does not account for selectivity between multiple RCDs, the actual leakage current of the line, RCD type (AC/A/B), or special project requirements. For design documentation, use a qualified specialist's calculation.",
+    "led.length": "Strip length, m",
+    "led.wpm": "Power, W/m",
+    "led.wpmHint": "Typical values: 4.8 / 9.6 / 14.4 / 19.2 / 24 W/m — depends on LED density",
+    "led.voltage": "Strip voltage",
+    "led.margin": "PSU power margin",
+    "led.wireLength": "Wire length PSU→strip, m",
+    "led.stripLabel": "LED strip",
+    "led.statCurrent": "Strip current",
+    "led.statPsu": "Power supply",
+    "led.statSection": "Wire cross-section",
+    "led.disclaimer": "This is an approximate calculation: PSU power = length × W/m × margin factor, rounded up to the nearest standard rating. The wire cross-section from PSU to strip is chosen from the actual strip current and the allowed voltage drop (copper, not counting the voltage drop inside the strip itself — on long strips that also builds up and dims the far end). For design documentation, use a qualified specialist's calculation.",
+    "lux.roomtype": "Room type",
+    "lux.optLiving": "Living room",
+    "lux.optBedroom": "Bedroom",
+    "lux.optKitchen": "Kitchen",
+    "lux.optKids": "Kids' room",
+    "lux.optOffice": "Office / workspace",
+    "lux.optBathroom": "Bathroom / WC",
+    "lux.optHallway": "Hallway / corridor",
+    "lux.optGarage": "Workshop / garage",
+    "lux.area": "Area, m²",
+    "lux.height": "Ceiling height, m",
+    "lux.margin": "Lamp ageing margin",
+    "lux.lampLumens": "Luminous flux of one lamp, lm",
+    "lux.lampHint": "A typical LED bulb ~800–850 lm (≈60 W on the old incandescent scale), a 36 W ceiling panel ~3000 lm",
+    "lux.statLumens": "Required flux",
+    "lux.statLux": "Illuminance norm",
+    "lux.statWatts": "≈ LED power",
+    "lux.statCount": "Number of lamps",
+    "lux.disclaimer": "This is an approximate calculation: required luminous flux = illuminance norm (by room type, similar to SP 52.13330) × area × ceiling-height correction × lamp-ageing margin. It does not account for the utilisation factor of luminous flux, the reflectivity of walls and ceiling, window placement, or colour temperature. The watt equivalent assumes ~100 lm/W for modern LED sources. For a precise lighting project, use a qualified specialist's calculation.",
+    "group.breaker": "Circuit breaker rating",
+    "group.breakerHint": "1~220 V network — standard household socket circuit",
+    "group.appliances": "Appliances in the circuit",
+    "group.kettle": "Kettle",
+    "group.microwave": "Microwave",
+    "group.toaster": "Toaster",
+    "group.hairdryer": "Hair dryer",
+    "group.heater": "Heater",
+    "group.vacuum": "Vacuum cleaner",
+    "group.custom": "Custom appliance",
+    "group.statTotal": "Total power",
+    "group.statCurrent": "Load current",
+    "group.statBreaker": "Circuit breaker",
+    "group.statRemaining": "Margin to 80%",
+    "group.disclaimer": "This is an approximate calculation: available power = 220 V × breaker rating. The recommended continuous-load limit is 80% of that value (common practice to avoid overheating under sustained load, not just brief peaks). It does not account for the actual likelihood of simultaneous use (demand factor), motor inrush currents, or the real cos φ of a mixed load. For design documentation, use a qualified specialist's calculation.",
+    "pipe.size": "Conduit / corrugated pipe",
+    "pipe.opt16": "⌀16 mm (inner 11.2 mm)",
+    "pipe.opt20": "⌀20 mm (inner 15 mm)",
+    "pipe.opt25": "⌀25 mm (inner 19 mm)",
+    "pipe.opt32": "⌀32 mm (inner 25 mm)",
+    "pipe.opt40": "⌀40 mm (inner 32 mm)",
+    "pipe.opt50": "⌀50 mm (inner 41 mm)",
+    "pipe.opt63": "⌀63 mm (inner 51 mm)",
+    "pipe.optCustom": "Custom inner diameter…",
+    "pipe.pipeCaps": "PIPE",
+    "pipe.customDiameter": "Pipe inner diameter, mm",
+    "pipe.cableDiameter": "Cable diameter (over sheath), mm",
+    "pipe.cableCount": "Number of cables",
+    "pipe.hint": "The cable diameter is usually printed on its jacket marking or the packaging; for a 3×2.5 mm² cable it's roughly 10–11 mm, for 3×1.5 mm² about 9 mm. For accuracy, measure it with calipers.",
+    "pipe.statFill": "Pipe fill",
+    "pipe.statAllowed": "Norm for N cables",
+    "pipe.statMax": "Max cables that fit",
+    "pipe.statDiam": "Pipe, inner",
+    "pipe.disclaimer": "This is an approximate calculation: the fill ratio is a widely used rule (similar to the NEC Chapter 9 fill tables, also common in local practice): 1 cable — up to 53% of the pipe cross-section, 2 cables — up to 31%, 3 or more — up to 40%. It does not account for the actual cross-sectional shape of cables (not always round for multi-core ones), the difficulty of pulling through bends and long runs, or specific project requirements. Check the actual cable diameter — sheaths of the same conductor size differ between manufacturers.",
+    "phase.loads": "Loads, W (0 = unused)",
+    "phase.load1": "Load 1",
+    "phase.load2": "Load 2",
+    "phase.load3": "Load 3",
+    "phase.load4": "Load 4",
+    "phase.load5": "Load 5",
+    "phase.load6": "Load 6",
+    "phase.load7": "Load 7",
+    "phase.load8": "Load 8",
+    "phase.hint": "For example: socket circuits, lighting, water heater, underfloor heating — each single-phase line on its own row",
+    "phase.phaseACaps": "PHASE A",
+    "phase.phaseBCaps": "PHASE B",
+    "phase.phaseCCaps": "PHASE C",
+    "phase.phaseA": "Phase A",
+    "phase.phaseB": "Phase B",
+    "phase.phaseC": "Phase C",
+    "phase.statImbalance": "Imbalance",
+    "phase.disclaimer": "This is an approximate calculation: loads are distributed with a greedy algorithm — each next load (starting with the largest) goes to the phase with the lowest current total. This gets very close to optimal but doesn't guarantee the mathematical best in every case. It doesn't account for the real-world simultaneity of loads, inrush currents, or that some circuits are physically more convenient to wire differently (e.g. by their position in the panel). Imbalance is calculated as (max − min) / average; the guideline is no more than ~15%. For design documentation, use a qualified specialist's calculation.",
+    "common.titleSuffix": "calculators",
+    "dyn.copperLower": "copper",
+    "dyn.aluminiumLower": "aluminium",
+    "dyn.net1compact": "1~220V",
+    "dyn.net3compact": "3~380V",
+    "dyn.avPrefix": "MCB",
+    "dyn.rcdPrefix": "RCD",
+    "dyn.sensitivity": "sensitivity",
+    "dyn.stripPrefix": "PSU",
+    "dyn.fillSuffix": "fill",
+    "dyn.imbalancePrefix": "Imbalance",
+    "dyn.minWord": "min",
+    "dyn.maxWord": "max",
+    "dyn.avgWord": "avg",
+    "dyn.freeWord": "free",
+    "dyn.overloadWord": "overload by",
+    "dyn.outOfWord": "of",
+    "rcd.note.sockets_dry": "Standard protection for socket circuits in dry living rooms — 30 mA.",
+    "rcd.note.wet": "Higher sensitivity is required in wet areas: bathroom, kitchen sink area, pool.",
+    "rcd.note.stationary": "For a stove or water heater, 30 mA is usually enough; if the appliance is in a bathroom, use 10 mA.",
+    "rcd.note.lighting": "Per code, RCDs aren’t mandatory for pure lighting circuits, but they don’t hurt as extra protection.",
+    "rcd.note.main": "This is a fire-protection RCD at the main incomer — it doesn’t replace the 10/30 mA circuit RCDs, it complements them. For selectivity, the main RCD should be at least three times less sensitive than the circuit ones (100 mA when circuits use 30 mA).",
+    "rcd.note.outdoor": "In especially damp spots (sauna, cellar, outdoors in the rain) consider 10 mA."
+  }
+};
+
+const UNITS = {
+  ru: {A:'А', W:'Вт', mm2:'мм²', mm:'мм', m:'м', m2:'м²', mA:'мА', lx:'лк', lm:'лм', pcs:'шт', V:'В'},
+  uk: {A:'А', W:'Вт', mm2:'мм²', mm:'мм', m:'м', m2:'м²', mA:'мА', lx:'лк', lm:'лм', pcs:'шт', V:'В'},
+  pl: {A:'A', W:'W', mm2:'mm²', mm:'mm', m:'m', m2:'m²', mA:'mA', lx:'lx', lm:'lm', pcs:'szt', V:'V'},
+  en: {A:'A', W:'W', mm2:'mm²', mm:'mm', m:'m', m2:'m²', mA:'mA', lx:'lx', lm:'lm', pcs:'pcs', V:'V'}
+};
+const LOCALE_MAP = { ru:'ru-RU', uk:'uk-UA', pl:'pl-PL', en:'en-US' };
+const LANG_NAMES = { ru:'RU', uk:'UA', pl:'PL', en:'EN' };
+let LANG = 'ru';
+try {
+  const saved = localStorage.getItem('elec-lang');
+  if (saved && UNITS[saved]) LANG = saved;
+} catch(e){}
+
+function U(key){ return UNITS[LANG][key]; }
+function t(key){ return (I18N[LANG] && I18N[LANG][key]) || I18N.ru[key] || key; }
+
+const __recalcAll = [];
+function registerRecalc(fn){ __recalcAll.push(fn); }
+
+function applyStaticTranslations(){
+  document.documentElement.lang = LANG;
+  const titleEl = document.getElementById('page-title');
+  if (titleEl) titleEl.textContent = t('common.title') + ' — ' + t('common.titleSuffix');
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const key = el.getAttribute('data-i18n');
+    const val = t(key);
+    if (val != null) el.textContent = val;
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn=>{
+    btn.classList.toggle('active', btn.dataset.lang === LANG);
+  });
+}
+
+function pw(n, forms){
+  if (LANG === 'en') return forms.en[n === 1 ? 0 : 1];
+  const idx = slavicPluralIdx(n);
+  return forms[LANG][idx];
+}
+
+// ===== переведённые динамические фразы (с числами) для всех калькуляторов =====
+const CABLE_WORD = { ru:['кабель','кабеля','кабелей'], uk:['кабель','кабелі','кабелів'], pl:['kabel','kable','kabli'], en:['cable','cables'] };
+const CABLE_WORD_GEN = { ru:['кабеля','кабелей','кабелей'], uk:['кабелю','кабелів','кабелів'], pl:['kabla','kabli','kabli'], en:['cable','cables'] };
+const FIT_VERB = { ru:['затянется','затянутся','затянутся'], uk:['затягнеться','затягнуться','затягнуться'], pl:['wciągnie się','wciągną się','wciągną się'], en:['fits','fit'] };
+
+function pipeNoteOk(count, cableD, pipeInner, dfmt){
+  const word = pw(count, CABLE_WORD);
+  const verb = pw(count, FIT_VERB);
+  if (LANG === 'ru') return 'В пределах нормы — ' + count + ' ' + word + ' диаметром ' + dfmt(cableD,1) + ' мм спокойно ' + verb + ' в трубу ⌀' + dfmt(pipeInner,1) + ' мм.';
+  if (LANG === 'uk') return 'У межах норми — ' + count + ' ' + word + ' діаметром ' + dfmt(cableD,1) + ' мм спокійно ' + verb + ' у трубу ⌀' + dfmt(pipeInner,1) + ' мм.';
+  if (LANG === 'pl') return 'W normie — ' + count + ' ' + word + ' o średnicy ' + dfmt(cableD,1) + ' mm spokojnie ' + verb + ' do rury ⌀' + dfmt(pipeInner,1) + ' mm.';
+  return 'Within norm — ' + count + ' ' + word + ' of ' + dfmt(cableD,1) + ' mm diameter ' + verb + ' comfortably into a ⌀' + dfmt(pipeInner,1) + ' mm pipe.';
+}
+function pipeNoteFail(fillPct, allowedPct, count, maxN, dfmt){
+  const wordGen = pw(count, CABLE_WORD_GEN);
+  if (LANG === 'ru') return 'Не влезет: заполнение ' + dfmt(fillPct,0) + '% превышает норму ' + dfmt(allowedPct,0) + '% для ' + count + ' ' + wordGen + ' — возьмите трубу большего диаметра или уменьшите число кабелей (максимум для этой трубы — ' + maxN + ' шт).';
+  if (LANG === 'uk') return 'Не влізе: заповнення ' + dfmt(fillPct,0) + '% перевищує норму ' + dfmt(allowedPct,0) + '% для ' + count + ' ' + wordGen + ' — візьміть трубу більшого діаметра або зменшіть кількість кабелів (максимум для цієї труби — ' + maxN + ' шт).';
+  if (LANG === 'pl') return 'Nie zmieści się: wypełnienie ' + dfmt(fillPct,0) + '% przekracza normę ' + dfmt(allowedPct,0) + '% dla ' + count + ' ' + wordGen + ' — weź rurę większej średnicy lub zmniejsz liczbę kabli (maksimum dla tej rury — ' + maxN + ' szt).';
+  return "Won't fit: fill " + dfmt(fillPct,0) + '% exceeds the ' + dfmt(allowedPct,0) + '% norm for ' + count + ' ' + wordGen + ' — use a larger pipe or fewer cables (max for this pipe — ' + maxN + ').';
+}
+
+function ledNoteWarning(s){
+  if (LANG === 'ru') return 'Даже максимальное сечение из ряда (' + s + ' мм²) не укладывается в допустимую потерю напряжения — провод от БП до ленты слишком длинный. Сократите длину провода, увеличьте допустимую потерю или перенесите БП ближе к ленте.';
+  if (LANG === 'uk') return 'Навіть максимальний переріз з ряду (' + s + ' мм²) не вкладається в допустиму втрату напруги — провід від БЖ до стрічки задовгий. Скоротіть довжину проводу, збільште допустиму втрату або перенесіть БЖ ближче до стрічки.';
+  if (LANG === 'pl') return 'Nawet maksymalny przekrój z szeregu (' + s + ' mm²) nie mieści się w dopuszczalnym spadku napięcia — przewód od zasilacza do taśmy jest za długi. Skróć przewód, zwiększ dopuszczalny spadek albo przenieś zasilacz bliżej taśmy.';
+  return "Even the largest standard cross-section (" + s + " mm²) doesn't meet the allowed voltage drop — the wire from PSU to strip is too long. Shorten the wire, allow a larger drop, or move the PSU closer to the strip.";
+}
+function ledNoteLimit(lengthTxt, limit, voltage){
+  const extra12 = voltage === 12;
+  if (LANG === 'ru') return 'Длина ленты (' + lengthTxt + ' м) превышает типовой предел одного луча запитки (~' + limit + ' м для ' + voltage + ' В) — яркость и цвет могут заметно проседать к дальнему концу. Рассмотрите запитку с двух сторон' + (extra12 ? ' или переход на 24 В' : '') + '.';
+  if (LANG === 'uk') return 'Довжина стрічки (' + lengthTxt + ' м) перевищує типову межу одного променя живлення (~' + limit + ' м для ' + voltage + ' В) — яскравість і колір можуть помітно просідати до дальнього кінця. Розгляньте живлення з двох боків' + (extra12 ? ' або перехід на 24 В' : '') + '.';
+  if (LANG === 'pl') return 'Długość taśmy (' + lengthTxt + ' m) przekracza typowy limit jednego odcinka zasilania (~' + limit + ' m dla ' + voltage + ' V) — jasność i kolor mogą wyraźnie spadać na dalekim końcu. Rozważ zasilanie z dwóch stron' + (extra12 ? ' lub przejście na 24 V' : '') + '.';
+  return 'Strip length (' + lengthTxt + ' m) exceeds the typical limit for one feed run (~' + limit + ' m for ' + voltage + ' V) — brightness and colour may noticeably drop toward the far end. Consider feeding from both ends' + (extra12 ? ' or switching to 24 V' : '') + '.';
+}
+function ledNoteNormal(){
+  if (LANG === 'ru') return 'Для равномерной яркости не превышайте типовую длину одного луча запитки: ~5 м для 12 В и ~15 м для 24 В.';
+  if (LANG === 'uk') return 'Для рівномірної яскравості не перевищуйте типову довжину одного променя живлення: ~5 м для 12 В і ~15 м для 24 В.';
+  if (LANG === 'pl') return 'Dla równomiernej jasności nie przekraczaj typowej długości jednego odcinka zasilania: ~5 m dla 12 V i ~15 m dla 24 V.';
+  return 'For even brightness, keep each feed run within the typical limit: ~5 m for 12 V and ~15 m for 24 V.';
+}
+
+function luxNote(kHeight, kMargin, dfmt){
+  let s;
+  if (LANG === 'ru') s = 'Учтены поправки: высота потолка × ' + dfmt(kHeight,1) + ', запас на старение ламп × ' + dfmt(kMargin,1) + '.';
+  else if (LANG === 'uk') s = 'Враховано поправки: висота стелі × ' + dfmt(kHeight,1) + ', запас на старіння ламп × ' + dfmt(kMargin,1) + '.';
+  else if (LANG === 'pl') s = 'Uwzględniono poprawki: wysokość sufitu × ' + dfmt(kHeight,1) + ', zapas na starzenie się lamp × ' + dfmt(kMargin,1) + '.';
+  else s = 'Corrections applied: ceiling height × ' + dfmt(kHeight,1) + ', lamp-ageing margin × ' + dfmt(kMargin,1) + '.';
+  if (kHeight > 1.0){
+    if (LANG === 'ru') s += ' При потолке выше 2,7 м освещённость на полу заметно падает — поэтому поправка увеличена.';
+    else if (LANG === 'uk') s += ' При стелі вище 2,7 м освітленість на підлозі помітно падає — тому поправку збільшено.';
+    else if (LANG === 'pl') s += ' Przy suficie wyższym niż 2,7 m oświetlenie podłogi wyraźnie spada — dlatego poprawka jest większa.';
+    else s += ' With ceilings above 2.7 m, floor-level illuminance drops noticeably — hence the larger correction.';
+  }
+  return s;
+}
+
+function groupNoteOverload(total, breakerPower, dfmt){
+  if (LANG === 'ru') return 'Перегрузка: суммарная мощность (' + dfmt(total) + ' Вт) превышает возможности автомата (' + dfmt(breakerPower) + ' Вт) — он отключится.';
+  if (LANG === 'uk') return 'Перевантаження: сумарна потужність (' + dfmt(total) + ' Вт) перевищує можливості автомата (' + dfmt(breakerPower) + ' Вт) — він відключиться.';
+  if (LANG === 'pl') return 'Przeciążenie: łączna moc (' + dfmt(total) + ' W) przekracza możliwości wyłącznika (' + dfmt(breakerPower) + ' W) — zadziała i wyłączy obwód.';
+  return 'Overload: total power (' + dfmt(total) + ' W) exceeds what the breaker can carry (' + dfmt(breakerPower) + ' W) — it will trip.';
+}
+function groupNoteCaution(safePower, dfmt){
+  if (LANG === 'ru') return 'Автомат не отключится, но нагрузка выше рекомендуемых 80% (' + dfmt(safePower) + ' Вт) для длительной работы — не держите такую комбинацию включённой подолгу.';
+  if (LANG === 'uk') return 'Автомат не відключиться, але навантаження вище рекомендованих 80% (' + dfmt(safePower) + ' Вт) для тривалої роботи — не тримайте таку комбінацію увімкненою довго.';
+  if (LANG === 'pl') return 'Wyłącznik nie zadziała, ale obciążenie przekracza zalecane 80% (' + dfmt(safePower) + ' W) do pracy ciągłej — nie trzymaj tej kombinacji włączonej długo.';
+  return "The breaker won't trip, but the load exceeds the recommended 80% (" + dfmt(safePower) + ' W) for continuous use — avoid keeping this combination running for long.';
+}
+function groupNoteOk(remaining, dfmt){
+  if (LANG === 'ru') return 'В пределах нормы — ещё можно добавить примерно ' + dfmt(remaining) + ' Вт в пределах рекомендуемых 80% от автомата.';
+  if (LANG === 'uk') return 'У межах норми — ще можна додати приблизно ' + dfmt(remaining) + ' Вт у межах рекомендованих 80% від автомата.';
+  if (LANG === 'pl') return 'W normie — można jeszcze dodać ok. ' + dfmt(remaining) + ' W w granicach zalecanych 80% wyłącznika.';
+  return "Within norm — you can add about " + dfmt(remaining) + ' more W within the recommended 80% of the breaker.';
+}
+
+function phaseNoteEmpty(){
+  if (LANG === 'ru') return 'Добавьте хотя бы одну нагрузку (введите мощность больше нуля), чтобы увидеть распределение по фазам.';
+  if (LANG === 'uk') return 'Додайте хоча б одне навантаження (введіть потужність більше нуля), щоб побачити розподіл по фазах.';
+  if (LANG === 'pl') return 'Dodaj co najmniej jedno obciążenie (wpisz moc większą od zera), aby zobaczyć rozkład na fazy.';
+  return 'Add at least one load (enter a power greater than zero) to see the phase distribution.';
+}
+function phaseNoteWarn(pct, dfmt){
+  if (LANG === 'ru') return 'Перекос ' + dfmt(pct,1) + '% выше рекомендуемого предела (~15%) — при сильном перекосе растёт ток в нулевом проводнике и может проседать напряжение на недогруженных фазах. Попробуйте разделить одну крупную нагрузку на части или перепроверьте вводные.';
+  if (LANG === 'uk') return 'Перекіс ' + dfmt(pct,1) + '% вищий за рекомендовану межу (~15%) — при сильному перекосі зростає струм у нульовому провіднику і може просідати напруга на недовантажених фазах. Спробуйте розділити одне велике навантаження на частини або перевірте вхідні дані.';
+  if (LANG === 'pl') return 'Niesymetria ' + dfmt(pct,1) + '% przekracza zalecany limit (~15%) — przy dużej niesymetrii rośnie prąd w przewodzie neutralnym i może spadać napięcie na niedociążonych fazach. Spróbuj podzielić jedno duże obciążenie na części lub sprawdź dane wejściowe.';
+  return 'Imbalance of ' + dfmt(pct,1) + '% is above the recommended limit (~15%) — a strong imbalance increases neutral current and can sag voltage on the lighter phases. Try splitting one large load into parts or double-check your inputs.';
+}
+function phaseNoteOk(pct, dfmt){
+  if (LANG === 'ru') return 'Распределение сбалансировано — перекос в пределах разумного (~' + dfmt(pct,1) + '%).';
+  if (LANG === 'uk') return 'Розподіл збалансований — перекіс у розумних межах (~' + dfmt(pct,1) + '%).';
+  if (LANG === 'pl') return 'Rozkład jest zbalansowany — niesymetria w rozsądnych granicach (~' + dfmt(pct,1) + '%).';
+  return 'The distribution is balanced — imbalance is within a reasonable range (~' + dfmt(pct,1) + '%).';
+}
+
+function setLanguage(lang){
+  if (!UNITS[lang]) return;
+  LANG = lang;
+  try { localStorage.setItem('elec-lang', lang); } catch(e){}
+  applyStaticTranslations();
+  __recalcAll.forEach(fn=>{ try{ fn(); }catch(e){ console.error(e); } });
+}
+
+// склонение существительных по числу: ru/uk/pl — 3 формы (1 / 2-4 / 5+), en — 2 формы (1 / много)
+function slavicPluralIdx(n){
+  const n10 = n % 10, n100 = n % 100;
+  if (n10 === 1 && n100 !== 11) return 0;
+  if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return 1;
+  return 2;
+}
+function pw(n, forms){
+  if (LANG === 'en') return forms.en[n === 1 ? 0 : 1];
+  const idx = slavicPluralIdx(n);
+  return forms[LANG][idx];
+}
+
 (function(){
   // ---- справочные таблицы (ориентировочные, аналог ПУЭ гл.1.3) ----
   const SECTIONS  = [1.5,2.5,4,6,10,16,25,35,50,70,95,120,150,185,240];
@@ -1204,7 +2014,7 @@
   const state = { network:'1', loadType:'power', material:'cu' };
 
   const el = id => document.getElementById(id);
-  const fmt = (n, d=1) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const fmt = (n, d=1) => n.toLocaleString(LOCALE_MAP[LANG], {minimumFractionDigits:d, maximumFractionDigits:d});
 
   function bindToggle(containerId, onChange){
     const container = el(containerId);
@@ -1306,26 +2116,27 @@
     const I = calcCurrent();
     const result = selectCable(I > 0 ? I : 0.001);
 
-    el('stat-current').textContent = fmt(I,1) + ' А';
-    el('stat-section').textContent = result.s.toLocaleString('ru-RU') + ' мм²';
+    el('stat-current').textContent = fmt(I,1) + ' ' + U('A');
+    el('stat-section').textContent = result.s.toLocaleString(LOCALE_MAP[LANG]) + ' ' + U('mm2');
     el('stat-drop').textContent = fmt(result.drop,1) + ' %';
-    el('stat-breaker').textContent = result.brk + ' А';
+    el('stat-breaker').textContent = result.brk + ' ' + U('A');
 
     el('stat-drop').classList.toggle('warn', result.warning);
     el('stat-drop').classList.toggle('accent', !result.warning);
     el('warning-banner').classList.toggle('show', result.warning);
 
     // диаграмма
-    const materialLabel = state.material === 'cu' ? 'медь' : 'алюминий';
-    const networkLabel = state.network === '1' ? '1~220В' : '3~380В';
-    el('txt-section-big').textContent = 'S = ' + result.s.toLocaleString('ru-RU') + ' мм²';
-    el('txt-current-small').textContent = materialLabel + ' · I = ' + fmt(I,1) + ' А';
+    const materialLabel = t(state.material === 'cu' ? 'dyn.copperLower' : 'dyn.aluminiumLower');
+    const networkLabel = t(state.network === '1' ? 'dyn.net1compact' : 'dyn.net3compact');
+    el('txt-section-big').textContent = 'S = ' + result.s.toLocaleString(LOCALE_MAP[LANG]) + ' ' + U('mm2');
+    el('txt-current-small').textContent = materialLabel + ' · I = ' + fmt(I,1) + ' ' + U('A');
     el('txt-network-label').textContent = networkLabel;
-    el('txt-breaker-small').textContent = result.brk + ' А';
-    el('txt-length').textContent = 'L = ' + ((parseFloat(el('length').value)||0).toLocaleString('ru-RU')) + ' м';
+    el('txt-breaker-small').textContent = result.brk + ' ' + U('A');
+    el('txt-length').textContent = 'L = ' + ((parseFloat(el('length').value)||0).toLocaleString(LOCALE_MAP[LANG])) + ' ' + U('m');
   }
 
   syncMotorFieldsState();
+  registerRecalc(recalc);
   recalc();
 })();
 
@@ -1347,17 +2158,17 @@
   const RCD_RATINGS  = [16,25,32,40,63,80,100,125];
 
   const LINE_TYPES = {
-    sockets_dry: { mA: 30,  note: 'Стандартная защита розеточных групп в сухих жилых комнатах — 30 мА.' },
-    wet:         { mA: 10,  note: 'Повышенная чувствительность обязательна во влажных зонах: ванная, кухня у мойки, бассейн.' },
-    stationary:  { mA: 30,  note: 'Для плиты и водонагревателя обычно достаточно 30 мА; если техника стоит в санузле — используйте 10 мА.' },
-    lighting:    { mA: 30,  note: 'По ПУЭ для чисто осветительных групп УЗО не обязательно, но не будет лишним для дополнительной защиты.' },
-    main:        { mA: 100, note: 'Это противопожарное УЗО на вводе — оно не заменяет групповые 10/30 мА, а дополняет их. Для селективности вводное УЗО должно быть минимум втрое менее чувствительным, чем групповые (100 мА при групповых 30 мА).' },
-    outdoor:     { mA: 30,  note: 'В особо сырых помещениях (баня, погреб, улица под дождём) рассмотрите 10 мА.' }
+    sockets_dry: { mA: 30,  noteKey: 'rcd.note.sockets_dry' },
+    wet:         { mA: 10,  noteKey: 'rcd.note.wet' },
+    stationary:  { mA: 30,  noteKey: 'rcd.note.stationary' },
+    lighting:    { mA: 30,  noteKey: 'rcd.note.lighting' },
+    main:        { mA: 100, noteKey: 'rcd.note.main' },
+    outdoor:     { mA: 30,  noteKey: 'rcd.note.outdoor' }
   };
 
   const rState = { network:'1', loadType:'power' };
   const rel  = id => document.getElementById(id);
-  const rfmt = (n, d=1) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const rfmt = (n, d=1) => n.toLocaleString(LOCALE_MAP[LANG], {minimumFractionDigits:d, maximumFractionDigits:d});
 
   function rBindToggle(containerId, onChange){
     const container = rel(containerId);
@@ -1402,19 +2213,20 @@
     const rcd = RCD_RATINGS.find(r => r >= breaker) || RCD_RATINGS[RCD_RATINGS.length-1];
     const type = LINE_TYPES[rel('rcd-linetype').value];
 
-    rel('rcd-stat-current').textContent = rfmt(I,1) + ' А';
-    rel('rcd-stat-breaker').textContent = breaker + ' А';
-    rel('rcd-stat-rcd').textContent = rcd + ' А';
-    rel('rcd-stat-ma').textContent = type.mA + ' мА';
-    rel('rcd-note').textContent = type.note;
+    rel('rcd-stat-current').textContent = rfmt(I,1) + ' ' + U('A');
+    rel('rcd-stat-breaker').textContent = breaker + ' ' + U('A');
+    rel('rcd-stat-rcd').textContent = rcd + ' ' + U('A');
+    rel('rcd-stat-ma').textContent = type.mA + ' ' + U('mA');
+    rel('rcd-note').textContent = t(type.noteKey);
 
-    rel('rcd-txt-big').textContent = 'АВ ' + breaker + ' А · УЗО ' + rcd + ' А';
-    rel('rcd-txt-small').textContent = 'чувствительность ' + type.mA + ' мА · I = ' + rfmt(I,1) + ' А';
-    rel('rcd-txt-av-value').textContent = breaker + ' А';
-    rel('rcd-txt-rcd-value').textContent = rcd + ' А';
-    rel('rcd-txt-rcd-ma').textContent = type.mA + ' мА';
+    rel('rcd-txt-big').textContent = t('dyn.avPrefix') + ' ' + breaker + ' ' + U('A') + ' · ' + t('dyn.rcdPrefix') + ' ' + rcd + ' ' + U('A');
+    rel('rcd-txt-small').textContent = t('dyn.sensitivity') + ' ' + type.mA + ' ' + U('mA') + ' · I = ' + rfmt(I,1) + ' ' + U('A');
+    rel('rcd-txt-av-value').textContent = breaker + ' ' + U('A');
+    rel('rcd-txt-rcd-value').textContent = rcd + ' ' + U('A');
+    rel('rcd-txt-rcd-ma').textContent = type.mA + ' ' + U('mA');
   }
 
+  registerRecalc(rRecalc);
   rRecalc();
 })();
 
@@ -1427,7 +2239,7 @@
 
   const lState = { voltage:12, margin:1.2 };
   const lel  = id => document.getElementById(id);
-  const lfmt = (n, d=1) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const lfmt = (n, d=1) => n.toLocaleString(LOCALE_MAP[LANG], {minimumFractionDigits:d, maximumFractionDigits:d});
 
   function lBindToggle(containerId, onChange){
     const container = lel(containerId);
@@ -1477,29 +2289,30 @@
       chosen = { s, dropPct, warning:true };
     }
 
-    lel('led-stat-current').textContent = lfmt(I,2) + ' А';
-    lel('led-stat-psu').textContent = psu + ' Вт';
-    lel('led-stat-section').textContent = chosen.s.toLocaleString('ru-RU') + ' мм²';
+    lel('led-stat-current').textContent = lfmt(I,2) + ' ' + U('A');
+    lel('led-stat-psu').textContent = psu + ' ' + U('W');
+    lel('led-stat-section').textContent = chosen.s.toLocaleString(LOCALE_MAP[LANG]) + ' ' + U('mm2');
     lel('led-stat-drop').textContent = lfmt(chosen.dropPct,1) + ' %';
     lel('led-stat-drop').classList.toggle('warn', chosen.warning);
     lel('led-stat-drop').classList.toggle('accent', !chosen.warning);
 
-    lel('led-txt-big').textContent = 'БП ' + psu + ' Вт · ' + lState.voltage + ' В';
-    lel('led-txt-small').textContent = 'I = ' + lfmt(I,2) + ' А · S = ' + chosen.s.toLocaleString('ru-RU') + ' мм²';
-    lel('led-txt-psu-value').textContent = psu + ' Вт';
+    lel('led-txt-big').textContent = t('dyn.stripPrefix') + ' ' + psu + ' ' + U('W') + ' · ' + lState.voltage + ' ' + U('V');
+    lel('led-txt-small').textContent = 'I = ' + lfmt(I,2) + ' ' + U('A') + ' · S = ' + chosen.s.toLocaleString(LOCALE_MAP[LANG]) + ' ' + U('mm2');
+    lel('led-txt-psu-value').textContent = psu + ' ' + U('W');
 
     // подсказка по максимальной длине одного луча запитки
     const limit = lState.voltage === 12 ? 5 : 15;
     if (chosen.warning){
-      lel('led-note').textContent = 'Даже максимальное сечение из ряда (' + chosen.s.toLocaleString('ru-RU') + ' мм²) не укладывается в допустимую потерю напряжения — провод от БП до ленты слишком длинный. Сократите длину провода, увеличьте допустимую потерю или перенесите БП ближе к ленте.';
+      lel('led-note').textContent = ledNoteWarning(chosen.s.toLocaleString(LOCALE_MAP[LANG]));
     } else if (length > limit){
-      lel('led-note').textContent = 'Длина ленты (' + lfmt(length,1) + ' м) превышает типовой предел одного луча запитки (~' + limit + ' м для ' + lState.voltage + ' В) — яркость и цвет могут заметно проседать к дальнему концу. Рассмотрите запитку с двух сторон' + (lState.voltage===12 ? ' или переход на 24 В' : '') + '.';
+      lel('led-note').textContent = ledNoteLimit(lfmt(length,1), limit, lState.voltage);
     } else {
-      lel('led-note').textContent = 'Для равномерной яркости не превышайте типовую длину одного луча запитки: ~5 м для 12 В и ~15 м для 24 В.';
+      lel('led-note').textContent = ledNoteNormal();
     }
     lel('led-note').classList.toggle('danger', chosen.warning);
   }
 
+  registerRecalc(lRecalc);
   lRecalc();
 })();
 
@@ -1519,7 +2332,7 @@
 
   const xState = { margin: 1.2 };
   const xel  = id => document.getElementById(id);
-  const xfmt = (n, d=0) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const xfmt = (n, d=0) => n.toLocaleString(LOCALE_MAP[LANG], {minimumFractionDigits:d, maximumFractionDigits:d});
 
   function xBindToggle(containerId, onChange){
     const container = xel(containerId);
@@ -1558,21 +2371,18 @@
     const watts = lumens / LED_EFFICACY;
     const count = lampLm > 0 ? Math.ceil(lumens / lampLm) : 0;
 
-    xel('lux-stat-lumens').textContent = xfmt(lumens,0) + ' лм';
-    xel('lux-stat-lux').textContent = room.lux + ' лк';
-    xel('lux-stat-watts').textContent = xfmt(watts,0) + ' Вт';
-    xel('lux-stat-count').textContent = count + ' шт';
+    xel('lux-stat-lumens').textContent = xfmt(lumens,0) + ' ' + U('lm');
+    xel('lux-stat-lux').textContent = room.lux + ' ' + U('lx');
+    xel('lux-stat-watts').textContent = xfmt(watts,0) + ' ' + U('W');
+    xel('lux-stat-count').textContent = count + ' ' + U('pcs');
 
-    xel('lux-txt-big').textContent = xfmt(lumens,0) + ' лм';
-    xel('lux-txt-small').textContent = room.lux + ' лк · ' + xfmt(area,1) + ' м² · h = ' + xfmt(height,1) + ' м';
+    xel('lux-txt-big').textContent = xfmt(lumens,0) + ' ' + U('lm');
+    xel('lux-txt-small').textContent = room.lux + ' ' + U('lx') + ' · ' + xfmt(area,1) + ' ' + U('m2') + ' · h = ' + xfmt(height,1) + ' ' + U('m');
 
-    let note = 'Учтены поправки: высота потолка × ' + xfmt(kHeight,1) + ', запас на старение ламп × ' + xfmt(xState.margin,1) + '.';
-    if (kHeight > 1.0){
-      note += ' При потолке выше 2,7 м освещённость на полу заметно падает — поэтому поправка увеличена.';
-    }
-    xel('lux-note').textContent = note;
+    xel('lux-note').textContent = luxNote(kHeight, xState.margin, xfmt);
   }
 
+  registerRecalc(xRecalc);
   xRecalc();
 })();
 
@@ -1583,7 +2393,7 @@
 
   const gState = { breaker: 16 };
   const gel  = id => document.getElementById(id);
-  const gfmt = (n, d=0) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const gfmt = (n, d=0) => n.toLocaleString(LOCALE_MAP[LANG], {minimumFractionDigits:d, maximumFractionDigits:d});
 
   function gBindToggle(containerId, onChange){
     const container = gel(containerId);
@@ -1625,26 +2435,26 @@
 
     let note;
     if (overloaded){
-      note = 'Перегрузка: суммарная мощность (' + gfmt(total) + ' Вт) превышает возможности автомата (' + gfmt(breakerPower) + ' Вт) — он отключится.';
+      note = groupNoteOverload(total, breakerPower, gfmt);
     } else if (caution){
-      note = 'Автомат не отключится, но нагрузка выше рекомендуемых 80% (' + gfmt(safePower) + ' Вт) для длительной работы — не держите такую комбинацию включённой подолгу.';
+      note = groupNoteCaution(safePower, gfmt);
     } else {
-      note = 'В пределах нормы — ещё можно добавить примерно ' + gfmt(remaining) + ' Вт в пределах рекомендуемых 80% от автомата.';
+      note = groupNoteOk(remaining, gfmt);
     }
 
-    gel('grp-stat-total').textContent = gfmt(total) + ' Вт';
-    gel('grp-stat-current').textContent = gfmt(current,1) + ' А';
-    gel('grp-stat-breaker').textContent = gState.breaker + ' А';
-    gel('grp-stat-remaining').textContent = (remaining < 0 ? '−' : '') + gfmt(Math.abs(remaining)) + ' Вт';
+    gel('grp-stat-total').textContent = gfmt(total) + ' ' + U('W');
+    gel('grp-stat-current').textContent = gfmt(current,1) + ' ' + U('A');
+    gel('grp-stat-breaker').textContent = gState.breaker + ' ' + U('A');
+    gel('grp-stat-remaining').textContent = (remaining < 0 ? '−' : '') + gfmt(Math.abs(remaining)) + ' ' + U('W');
     gel('grp-stat-remaining').classList.toggle('warn', overloaded || caution);
     gel('grp-stat-remaining').classList.toggle('accent', !overloaded && !caution);
 
     gel('grp-note').textContent = note;
     gel('grp-note').classList.toggle('danger', overloaded);
 
-    gel('grp-txt-big').textContent = gfmt(total) + ' Вт из ' + gfmt(breakerPower) + ' Вт';
-    gel('grp-txt-small').textContent = (remaining < 0 ? 'перегрузка на ' + gfmt(Math.abs(remaining)) + ' Вт' : 'свободно ' + gfmt(remaining) + ' Вт') + ' · автомат ' + gState.breaker + ' А';
-    gel('grp-txt-breaker-value').textContent = gState.breaker + ' А';
+    gel('grp-txt-big').textContent = gfmt(total) + ' ' + U('W') + ' ' + t('dyn.outOfWord') + ' ' + gfmt(breakerPower) + ' ' + U('W');
+    gel('grp-txt-small').textContent = (remaining < 0 ? t('dyn.overloadWord') + ' ' + gfmt(Math.abs(remaining)) + ' ' + U('W') : t('dyn.freeWord') + ' ' + gfmt(remaining) + ' ' + U('W')) + ' · ' + t('common.breakerCaps').toLowerCase() + ' ' + gState.breaker + ' ' + U('A');
+    gel('grp-txt-breaker-value').textContent = gState.breaker + ' ' + U('A');
 
     const trackX = 170, trackW = 610;
     const fillW = Math.max(0, Math.min(total / breakerPower, 1)) * trackW;
@@ -1657,6 +2467,7 @@
     gel('grp-marker-80').setAttribute('x2', marker80X);
   }
 
+  registerRecalc(gRecalc);
   gRecalc();
 })();
 
@@ -1667,7 +2478,7 @@
   };
 
   const pel  = id => document.getElementById(id);
-  const pfmt = (n, d=1) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const pfmt = (n, d=1) => n.toLocaleString(LOCALE_MAP[LANG], {minimumFractionDigits:d, maximumFractionDigits:d});
 
   function allowedRatio(n){
     if (n <= 1) return 0.53;
@@ -1701,21 +2512,6 @@
     return maxN;
   }
 
-  function cableWordNom(n){ // именительный: кабель / кабеля / кабелей
-    const n10 = n % 10, n100 = n % 100;
-    if (n10 === 1 && n100 !== 11) return 'кабель';
-    if (n10 >= 2 && n10 <= 4 && (n100 < 12 || n100 > 14)) return 'кабеля';
-    return 'кабелей';
-  }
-  function cableWordGen(n){ // родительный после «для»: кабеля / кабелей
-    const n10 = n % 10, n100 = n % 100;
-    return (n10 === 1 && n100 !== 11) ? 'кабеля' : 'кабелей';
-  }
-  function cableVerb(n){ // затянется / затянутся
-    const n10 = n % 10, n100 = n % 100;
-    return (n10 === 1 && n100 !== 11) ? 'ется' : 'утся';
-  }
-
   function pRecalc(){
     const pipeInner = currentPipeInner();
     const cableD = parseFloat(pel('pipe-cable-diameter').value) || 0;
@@ -1732,21 +2528,21 @@
     pel('pipe-stat-fill').classList.toggle('warn', !fits);
     pel('pipe-stat-fill').classList.toggle('accent', fits);
     pel('pipe-stat-allowed').textContent = pfmt(allowed*100,0) + ' %';
-    pel('pipe-stat-max').textContent = maxN + ' шт';
-    pel('pipe-stat-diam').textContent = pfmt(pipeInner,1) + ' мм';
+    pel('pipe-stat-max').textContent = maxN + ' ' + U('pcs');
+    pel('pipe-stat-diam').textContent = pfmt(pipeInner,1) + ' ' + U('mm');
 
     let note;
     if (fits){
-      note = 'В пределах нормы — ' + count + ' ' + cableWordNom(count) + ' диаметром ' + pfmt(cableD,1) + ' мм спокойно затян' + cableVerb(count) + ' в трубу ⌀' + pfmt(pipeInner,1) + ' мм.';
+      note = pipeNoteOk(count, cableD, pipeInner, pfmt);
     } else {
-      note = 'Не влезет: заполнение ' + pfmt(fillRatio*100,0) + '% превышает норму ' + pfmt(allowed*100,0) + '% для ' + count + ' ' + cableWordGen(count) + ' — возьмите трубу большего диаметра или уменьшите число кабелей (максимум для этой трубы — ' + maxN + ' шт).';
+      note = pipeNoteFail(fillRatio*100, allowed*100, count, maxN, pfmt);
     }
     pel('pipe-note').textContent = note;
     pel('pipe-note').classList.toggle('danger', !fits);
 
-    pel('pipe-txt-big').textContent = pfmt(fillRatio*100,0) + '% заполнения';
-    pel('pipe-txt-small').textContent = count + ' каб. × ⌀' + pfmt(cableD,1) + ' мм в трубе ⌀' + pfmt(pipeInner,1) + ' мм';
-    pel('pipe-txt-diam-value').textContent = pfmt(pipeInner,1) + ' мм';
+    pel('pipe-txt-big').textContent = pfmt(fillRatio*100,0) + '% ' + t('dyn.fillSuffix');
+    pel('pipe-txt-small').textContent = count + ' × ⌀' + pfmt(cableD,1) + ' ' + U('mm') + ' / ⌀' + pfmt(pipeInner,1) + ' ' + U('mm');
+    pel('pipe-txt-diam-value').textContent = pfmt(pipeInner,1) + ' ' + U('mm');
 
     const trackX = 170, trackW = 610;
     const fillW = Math.max(0, Math.min(fillRatio, 1)) * trackW;
@@ -1761,20 +2557,21 @@
     pel('pipe-marker-label').textContent = pfmt(allowed*100,0) + '%';
   }
 
+  registerRecalc(pRecalc);
   pRecalc();
 })();
 
 // ---- калькулятор «Баланс фаз» ----
 (function(){
   const phel  = id => document.getElementById(id);
-  const phfmt = (n, d=0) => n.toLocaleString('ru-RU', {minimumFractionDigits:d, maximumFractionDigits:d});
+  const phfmt = (n, d=0) => n.toLocaleString(LOCALE_MAP[LANG], {minimumFractionDigits:d, maximumFractionDigits:d});
   const LOAD_IDS = ['ph-load-0','ph-load-1','ph-load-2','ph-load-3','ph-load-4','ph-load-5','ph-load-6','ph-load-7'];
 
   LOAD_IDS.forEach(id => phel(id).addEventListener('input', phRecalc));
 
   function phRecalc(){
     const loads = LOAD_IDS
-      .map((id,i) => ({ name: 'Нагрузка ' + (i+1), watts: parseFloat(phel(id).value) || 0 }))
+      .map((id,i) => ({ name: t('phase.load' + (i+1)), watts: parseFloat(phel(id).value) || 0 }))
       .filter(l => l.watts > 0);
     loads.sort((a,b) => b.watts - a.watts); // сначала самые мощные (эвристика LPT)
 
@@ -1796,15 +2593,15 @@
     const imbalancePct = avgT > 0 ? ((maxT - minT) / avgT * 100) : 0;
     const warn = imbalancePct > 15;
 
-    phel('phase-stat-a').textContent = phfmt(phases[0].total) + ' Вт';
-    phel('phase-stat-b').textContent = phfmt(phases[1].total) + ' Вт';
-    phel('phase-stat-c').textContent = phfmt(phases[2].total) + ' Вт';
+    phel('phase-stat-a').textContent = phfmt(phases[0].total) + ' ' + U('W');
+    phel('phase-stat-b').textContent = phfmt(phases[1].total) + ' ' + U('W');
+    phel('phase-stat-c').textContent = phfmt(phases[2].total) + ' ' + U('W');
     phel('phase-stat-imbalance').textContent = phfmt(imbalancePct,1) + ' %';
     phel('phase-stat-imbalance').classList.toggle('warn', warn);
     phel('phase-stat-imbalance').classList.toggle('accent', !warn);
 
-    phel('phase-txt-big').textContent = 'Перекос ' + phfmt(imbalancePct,1) + '%';
-    phel('phase-txt-small').textContent = 'мин ' + phfmt(minT) + ' Вт · макс ' + phfmt(maxT) + ' Вт · среднее ' + phfmt(avgT,0) + ' Вт';
+    phel('phase-txt-big').textContent = t('dyn.imbalancePrefix') + ' ' + phfmt(imbalancePct,1) + '%';
+    phel('phase-txt-small').textContent = t('dyn.minWord') + ' ' + phfmt(minT) + ' ' + U('W') + ' · ' + t('dyn.maxWord') + ' ' + phfmt(maxT) + ' ' + U('W') + ' · ' + t('dyn.avgWord') + ' ' + phfmt(avgT,0) + ' ' + U('W');
 
     const maxScale = Math.max(maxT, 1);
     const baseY = 170, maxH = 110;
@@ -1814,29 +2611,36 @@
       bar.setAttribute('height', h.toFixed(1));
       bar.setAttribute('y', (baseY - h).toFixed(1));
       const label = phel('phase-bar-' + p.key + '-label');
-      label.textContent = p.name + ' · ' + phfmt(p.total) + ' Вт';
+      label.textContent = p.name + ' · ' + phfmt(p.total) + ' ' + U('W');
       label.setAttribute('y', Math.min(baseY - h - 10, 90).toFixed(1));
 
       phel('phase-items-' + p.key).textContent = p.items.length
-        ? p.items.map(l => l.name + ' (' + phfmt(l.watts) + ' Вт)').join(', ')
+        ? p.items.map(l => l.name + ' (' + phfmt(l.watts) + ' ' + U('W') + ')').join(', ')
         : '—';
-      phel('phase-total-' + p.key).textContent = phfmt(p.total) + ' Вт';
+      phel('phase-total-' + p.key).textContent = phfmt(p.total) + ' ' + U('W');
     });
 
     let note;
     if (loads.length === 0){
-      note = 'Добавьте хотя бы одну нагрузку (введите мощность больше нуля), чтобы увидеть распределение по фазам.';
+      note = phaseNoteEmpty();
     } else if (warn){
-      note = 'Перекос ' + phfmt(imbalancePct,1) + '% выше рекомендуемого предела (~15%) — при сильном перекосе растёт ток в нулевом проводнике и может проседать напряжение на недогруженных фазах. Попробуйте разделить одну крупную нагрузку на части или перепроверьте вводные.';
+      note = phaseNoteWarn(imbalancePct, phfmt);
     } else {
-      note = 'Распределение сбалансировано — перекос в пределах разумного (~' + phfmt(imbalancePct,1) + '%).';
+      note = phaseNoteOk(imbalancePct, phfmt);
     }
     phel('phase-note').textContent = note;
     phel('phase-note').classList.toggle('danger', warn);
   }
 
+  registerRecalc(phRecalc);
   phRecalc();
 })();
+
+// ---- переключатель языка: подключение кнопок и применение сохранённого языка ----
+document.querySelectorAll('.lang-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=> setLanguage(btn.dataset.lang));
+});
+applyStaticTranslations();
 </script>
 </body>
 </html>
